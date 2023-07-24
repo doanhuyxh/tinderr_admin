@@ -76,6 +76,8 @@ namespace tinderr.Controllers
                 user.CountWatch = 2;
                 user.IsActive = true;
                 user.Balance = 0;
+                user.Banknumber = "";
+                user.Bankname = "";
 
                 var result = await _userManager.CreateAsync(user, vm.PasswordHash);
 
@@ -91,6 +93,7 @@ namespace tinderr.Controllers
 
                     return Ok(json);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     json.Message += error.Description;
@@ -100,7 +103,7 @@ namespace tinderr.Controllers
             }
             catch (Exception ex)
             {
-                json.Message = ex.Message;
+                json.Message = "Exception: "+ ex.Message;
                 json.IsSuccess = false;
                 json.Data = vm;
                 return Ok(json);
@@ -144,6 +147,8 @@ namespace tinderr.Controllers
                 balance = user.Balance,
                 countWatch = user.CountWatch,
                 userName = user.UserName,
+                bankname = user.Bankname,
+                banknumber = user.Banknumber,
                 id = user.Id,
             };
 
@@ -248,6 +253,7 @@ namespace tinderr.Controllers
 
             }
 
+            json.IsSuccess = false;
             json.Message = "Not Allow";
             json.Data = null;
             return Ok(json);
@@ -335,11 +341,7 @@ namespace tinderr.Controllers
                 user.Name = vm.Name;
                 user.Bankname = vm.BankName;
                 user.Banknumber = vm.BankNumber;
-                if (vm.Avatar != null)
-                {
-                    user.AvatartPath = await _icommon.UploadAvatarUser(vm.Avatar);
-                }
-
+                
                 await _userManager.UpdateAsync(user);
 
                 json.IsSuccess = true;

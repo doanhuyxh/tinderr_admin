@@ -10,9 +10,6 @@ namespace tinderr.Models.AccountViewModel
         [Display(Name = "Tên người dùng")]
         public string? Name { get; set; }
 
-        [Display(Name = "Avatart")]
-        public IFormFile? Avatar { get; set; }
-
         [Display(Name = "Ngân hàng")]
         public string? BankName { get; set; }
 

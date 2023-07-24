@@ -16,6 +16,7 @@ namespace tinderr.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.currentUser = HttpContext.User.Identity.Name;
             return View();
         }
 
