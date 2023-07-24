@@ -1,0 +1,80 @@
+﻿@model tinderr.Models.ViewModel.AseetVideoViewModel;
+@{
+    Layout = null;
+}
+<link href="/css/custom_input_file.css" rel="stylesheet" />
+<form>
+    <input hidden asp-for="Id" />
+    <input hidden asp-for="CreatedDate" />
+    <input hidden asp-for="IsDeleted" />
+    <input hidden asp-for="ViewCount" />
+    <input hidden asp-for="Outstanding" />
+    <input hidden asp-for="Status" />
+    <div class="input-group input-group-outline is-valid my-3">
+        <label asp-for="VideoName" class="form-label"></label>
+        <input asp-for="VideoName" class="form-control" />
+        <span asp-validation-for="VideoName" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label for="AvatarFile" class="attachment">
+            <div class="row btn-file">
+                <div class="btn-file__preview"></div>
+                <div class="btn-file__actions">
+                    <div class="btn-file__actions__item col-xs-12 text-center">
+                        <div class="btn-file__actions__item--shadow">
+                            <i class="fa fa-plus fa-lg fa-fw" aria-hidden="true"></i>
+                            <div class="visible-xs-block"></div>
+                            Chọn ảnh đại diện
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input name="file" type="file" accept="image/*" asp-for="AvatarFile">
+        </label>
+    </div>
+
+     <div class="form-group mt-3">
+        <label for="VideoFile" class="drop-container" id="dropcontainer">
+            <span class="drop-title">Kéo video vào đây</span>
+            hoặc
+            <input type="file" asp-for="VideoFile" accept="video/*" required>
+        </label>
+     </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <div class="container">
+            <select asp-for="CategoryId" asp-items="@ViewBag.category" class="form-control">
+                <option value="0" disabled>--- Không  ---</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-12 d-inline-flex justify-content-end mt-3">
+        <button type="button" id="close" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary" onclick="Save()">Lưu thay đổi</button>
+    </div>
+</form>
+
+<script>
+    jQuery(($) => {
+        $('.attachment input[type="file"]')
+            .on('change', (event) => {
+                let el = $(event.target).closest('.attachment').find('.btn-file');
+
+                el
+                    .find('.btn-file__actions__item')
+                    .css({
+                        'padding': '135px'
+                    });
+
+                el
+                    .find('.btn-file__preview')
+                    .css({
+                        'background-image': 'url(' + window.URL.createObjectURL(event.target.files[0]) + ')'
+                    });
+            });
+    });
+</script>

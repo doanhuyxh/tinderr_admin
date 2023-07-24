@@ -1,0 +1,119 @@
+﻿<div id="AppVueCategory" class="row mt-1">
+    <div class="container">
+        <div v-on:click="AddCategory(0)" class="btn btn-success float-right">Thêm danh mục phim</div>
+    </div>
+    <div class="container">
+        <table class="table table-striped" id="tableBrand">
+            <thead class="bg-gradient-warning text-primary">
+                <tr>
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Tên danh mục</th>
+                    <th class="text-center">Số lượng video</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">Ngày tạo</th>
+                    <th class="text-center"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in data" :key="index">
+                    <td class="text-center">{{index + 1}}</td>
+                    <td class="text-center">{{item.categoryName}}</td>
+                    <td class="text-center">{{item.countAssetVideo}}</td>
+                    <td class="text-center">
+                        <span v-if="item.isActive" class="btn btn-success" v-on:click="ChangeType(item.id)">Mở</span>
+                        <span v-else class="btn btn-danger" v-on:click="ChangeType(item.id)">Đóng</span>
+                    </td>
+                    <td class="text-center">{{item.createdDate.slice(0, item.createdDate.indexOf("T"))}}</td>
+                    <td class="text-center">
+                        <p class="btn btn-warning" v-on:click="Edit(item.id)">Sửa</p>
+                        <p class="btn btn-danger" v-on:click="Delete(item.id)">Xóa</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var AppVueCategory = new Vue({
+        el: "#AppVueCategory",
+        data: {
+            data: []
+        },
+        computed: {
+
+        },
+        mounted() {
+            this.Init()
+        },
+        methods: {
+            Init() {
+                fetch("/Category/GetDataCategory")
+                    .then(res => res.json())
+                    .then(data => this.data = data.data)
+            },
+            AddCategory(id) {
+                $("#SmallModalDiv").load(`/Category/AddEditCategory?id=${id}`, function () {
+                    $("#SmallModal").modal("show");
+                    $("#titleSmallModal").html("Thêm danh mục video")
+                })
+            },
+            Delete(id) {
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xoá?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy',
+                }).then((result) => {
+                    if (result.value) {
+                        fetch(`/Category/DeleteCategory?id=${id}`)
+                            .then(res => res.json())
+                            .then(data => { this.Init() })
+                    }
+                });
+            },
+            Edit(id) {
+                $("#SmallModalDiv").load(`/Category/AddEditCategory?id=${id}`, function () {
+                    $("#SmallModal").modal("show");
+                    $("#titleSmallModal").html("Thêm danh mục video")
+                })
+            },
+            ChangeType(id) {
+                fetch(`/Category/ChangeTypeCategory?id=${id}`)
+                    .then(res => res.json())
+                    .then(data => { this.Init() })
+            }
+        }
+    });
+    function Save() {
+
+        var _data = new FormData()
+        _data.append("Id", $("#Id").val())
+        _data.append("IsActive", $("#IsActive").val())
+        _data.append("CreatedDate", $("#CreatedDate").val())
+        _data.append("CategoryName", $("#CategoryName").val())
+
+        fetch("/Category/EditCategory", {
+            method: "POST",
+            headers: {
+                processData: false,
+                contentType: false,
+            },
+            body: _data
+        }).then(res => res.json())
+            .then(res => {
+                $('#SmallModal').modal('hide');
+                var message = "Thành công";
+                Swal.fire({
+                    title: message,
+                    icon: 'success',
+                }).then(res => {
+                    AppVueCategory.Init();
+                });
+            })
+    }
+</script>

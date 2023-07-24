@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+@model tinderr.Models.Notify;
+
+<form>
+    <input hidden asp-for="CreatedDate" />
+    <input hidden asp-for="IsDeleted" />
+    <input hidden asp-for="Id" />
+    <input hidden asp-for="Status" />
+
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="text" class="form-control" asp-for="Title" placeholder="Tiêu đề">
+    </div>
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="text" class="form-control" asp-for="Content" placeholder="Nội dung thông báo">
+    </div>
+    <div class="col-12 d-inline-flex justify-content-end">
+        <button type="button" id="close" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary" onclick="Save()">Lưu thay đổi</button>
+    </div>
+</form>

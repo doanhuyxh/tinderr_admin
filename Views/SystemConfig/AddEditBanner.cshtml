@@ -1,0 +1,27 @@
+﻿    @{
+    Layout = null;
+}
+
+@model tinderr.Models.ViewModel.BannerViewModel;
+
+<form>
+    <input hidden asp-for="CreatedDate" />
+    <input hidden asp-for="IsDeleted" />
+    <input hidden asp-for="Id" />
+    <input hidden asp-for="Path" />
+    <input hidden asp-for="Status" />
+
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="text" class="form-control" asp-for="Name" placeholder="Tên banner">
+    </div>
+
+    <div class="px-2">
+        <label for="BannerFile" class="form-label">Ảnh</label>
+        <input class="form-control form-control-lg" type="file" accept="image/*" asp-for="BannerFile">
+    </div>
+
+    <div class="col-12 d-inline-flex justify-content-end">
+        <button type="button" id="close" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary" onclick="Save()">Lưu thay đổi</button>
+    </div>
+</form>

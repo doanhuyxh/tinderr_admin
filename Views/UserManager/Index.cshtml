@@ -1,0 +1,219 @@
+﻿<div id="UserAll" class="row mt-1">
+    <div class="container">
+        <div v-on:click="AddUser()" class="btn btn-success float-right">Thêm user</div>
+    </div>
+    <div class="container">
+        <table class="table table-striped table-responsive-xl" id="tableBrand">
+            <thead class="bg-gradient-warning text-primary">
+                <tr>
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Tài khoản</th>
+                    <th class="text-center">Tên</th>
+                    <th class="text-center">Ảnh đại diện</th>
+                    <th class="text-center">Mã giới thiệu</th>
+                    <th class="text-center">Tổng số mời</th>
+                    <th class="text-center">Ngân hàng</th>
+                    <th class="text-center">Số tài khoản</th>
+                    <th class="text-center">Số dư</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">IP</th>
+                    <th class="text-center">Vai trò</th>
+                    <th class="text-center">Ngày tạo</th>
+                    <th class="text-center"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in data" :key="index">
+                    <th class="text-center">{{index+1}}</th>
+                    <th class="text-center">{{item.userName}}</th>
+                    <th class="text-center">{{item.name}}</th>
+                    <th class="text-center"><span class="btn btn-info opacity-5" v-on:click="ViewAvatar(item.avatarPath)"><i class="material-icons">3p</i></span></th>
+                    <th class="text-center">{{item.inviteCode}}</th>
+                    <th class="text-center">{{item.invitedCount}}</th>
+                    <th class="text-center">{{item.bankname}}</th>
+                    <th class="text-center">{{item.banknumber}}</th>
+                    <th class="text-center">{{item.balance}}</th>
+                    <th class="text-center">
+                        <span v-if="item.isActive" class="btn btn-success" v-on:click="ChangeActive(item.userName)">Mở</span>
+                        <span v-else class="btn btn-danger" v-on:click="ChangeActive(item.userName)">Đóng</span>
+                    </th>
+                    <th class="text-center">{{item.ip}}</th>
+                    <th class="text-center">{{item.role}}</th>
+                    <th class="text-center">{{item.createDate.slice(0, item.createDate.indexOf("T"))}}</th>
+                    <th class="text-center">
+                        <p class="btn btn-warning" v-on:click="Edit(item.applicationUserId)">Sửa</p>
+                        <p class="btn btn-danger" v-on:click="Delete(item.applicationUserId)">Xóa</p>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var UserAll = new Vue({
+        el: "#UserAll",
+        data: {
+            data: []
+        },
+        computed: {
+
+        },
+        mounted() {
+            this.Init()
+        },
+        methods: {
+            Init() {
+                fetch("/UserManager/GetAllDataUser")
+                    .then(res => res.json())
+                    .then(data => this.data = data.data)
+            },
+            AddUser() {
+                $("#BigModalDiv").load(`/UserManager/AddEditUser?id=0`, function () {
+                    $("#BigModal").modal("show");
+                    $("#titleBigModal").html("Thêm user mới")
+                })
+            },
+            Delete(id) {
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xoá?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy',
+                }).then((result) => {
+                    if (result.value) {
+                        if (result.value) {
+                            fetch(`/UserManager/DeleteUser?id=${id}`)
+                                .then(res => res.json())
+                                .then(data => { this.Init() })
+                        }
+                    }
+                });
+            },
+            Edit(id) {
+                $("#BigModalDiv").load(`/UserManager/EditUser?id=${id}`, function () {
+                    $("#BigModal").modal("show");
+                    $("#titleBigModal").html("Cập nhật")
+                })
+            },
+            ChangeActive(id) {
+                fetch(`/UserManager/ChangeActiveUser?userName=${id}`)
+                    .then(res => res.json())
+                    .then(data => { this.Init() })
+            },
+            ViewAvatar(url) {
+                Swal.fire({
+                    imageUrl: `${url}`,
+                    imageWidth: 400,
+                })
+            },
+
+        }
+    });
+    async function Save() {
+
+        let _ip_data = await fetch("//api.ipify.org/?format=json")
+        let _ip_json = await _ip_data.json()
+        let ip = _ip_json.ip
+
+        var _data = new FormData()
+        _data.append("ApplicationUserId", $("#ApplicationUserId").val())
+        _data.append("CreateDate", $("#CreateDate").val())
+        _data.append("IsActive", $("#IsActive").val())
+        _data.append("CountWatch", 2)
+        _data.append("AvatarPath", $("#AvatarPath").val())
+        _data.append("UserName", $("#UserName").val())
+        _data.append("Name", $("#Name").val())
+        _data.append("Password", $("#Password").val())
+        _data.append("AvatarFile", $("#AvatarFile").val())
+        _data.append("InviteCode", $("#InviteCode").val())
+        _data.append("Balance", $("#Balance").val())
+        _data.append("Bankname", $("#Bankname").val())
+        _data.append("Banknumber", $("#Banknumber").val())
+        _data.append("AvatarFile", document.getElementById("AvatarFile").files[0])
+        _data.append("Ip", ip)
+        _data.append("Role", $("#Role").val())
+
+        
+        
+   
+        $('#preloader').fadeIn();
+        fetch("/UserManager/AddEditUser", {
+            method: "POST",
+            headers: {
+                processData: false,
+                contentType: false,
+            },
+            body: _data
+        }).then(res => res.json())
+            .then(res => {
+                $('#preloader').fadeOut();
+                if (res.isSuccess) {
+                    $('#BigModal').modal('hide');
+                    Swal.fire({
+                        title: "Thành công",
+                        icon: 'success',
+                    }).then(res => {
+                        UserAll.Init();
+                    });
+                } else {
+                    $('#BigModal').modal('hide');
+                    Swal.fire({
+                        title: "Thất bại",
+                        icon: 'error',
+                    }).then(res => {
+                        UserAll.Init();
+                    });
+                }
+            })
+    }
+    
+    async function Save2() {
+
+        var _data = new FormData()
+        _data.append("ApplicationUserId", $("#ApplicationUserId").val())
+        
+        _data.append("Name", $("#Name").val())
+        _data.append("AvatarFile", $("#AvatarFile").val())
+        _data.append("Balance", $("#Balance").val())
+        _data.append("Bankname", $("#Bankname").val())
+        _data.append("Banknumber", $("#Banknumber").val())
+        _data.append("AvatarFile", document.getElementById("AvatarFile").files[0])
+        _data.append("Role", $("#Role").val())
+
+        
+        
+
+        fetch("/UserManager/UpdateUser", {
+            method: "POST",
+            headers: {
+                processData: false,
+                contentType: false,
+            },
+            body: _data
+        }).then(res => res.json())
+            .then(res => {
+                if (res.isSuccess) {
+                    $('#BigModal').modal('hide');
+                    Swal.fire({
+                        title: "Thành công",
+                        icon: 'success',
+                    }).then(res => {
+                        UserAll.Init();
+                    });
+                } else {
+                    $('#BigModal').modal('hide');
+                    Swal.fire({
+                        title: "Thất bại",
+                        icon: 'error',
+                    }).then(res => {
+                        UserAll.Init();
+                    });
+                }
+            })
+    }
+</script>

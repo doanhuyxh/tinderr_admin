@@ -1,0 +1,128 @@
+﻿<div id="AppVueBanner" class="row mt-1">
+    <div class="container">
+        <div v-on:click="AddBanner(0)" class="btn btn-success float-right">Thêm banner</div>
+    </div>
+    <div class="container">
+        <table class="table table-striped" id="tableBrand">
+            <thead class="bg-gradient-warning text-primary">
+                <tr>
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Tên banner</th>
+                    <th class="text-center">Hình ảnh</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">Ngày tạo</th>
+                    <th class="text-center"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in data" :key="index">
+                    <td class="text-center">{{index + 1}}</td>
+                    <td class="text-center">{{item.name}}</td>
+                    <td class="text-center"><span class="btn btn-info opacity-5" v-on:click="ViewImg(item.path)"><img :src="item.path" style="width:30px; height: 20px;"/></span></td>
+                    <td class="text-center">
+                        <span v-if="item.status" class="btn btn-success" v-on:click="ChangeType(item.id)">Mở</span>
+                        <span v-else class="btn btn-danger" v-on:click="ChangeType(item.id)">Đóng</span>
+                    </td>
+                    <td class="text-center">{{item.createdDate.slice(0, item.createdDate.indexOf("T"))}}</td>
+                    <td class="text-center">
+                        <p class="btn btn-warning" v-on:click="Edit(item.id)">Sửa</p>
+                        <p class="btn btn-danger" v-on:click="Delete(item.id)">Xóa</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var AppVueBanner = new Vue({
+        el: "#AppVueBanner",
+        data: {
+            data: []
+        },
+        computed: {
+
+        },
+        mounted() {
+            this.Init()
+        },
+        methods: {
+            Init() {
+                fetch("/SystemConfig/GetDataBanner")
+                .then(res=>res.json())
+                .then(data=>{this.data=data.data})
+            },
+            AddBanner(id) {
+                $("#SmallModalDiv").load(`/SystemConfig/AddEditBanner?id=${id}`, function () {
+                   $("#SmallModal").modal("show");
+                    $("#titleSmallModal").html("Thêm banner")
+                })
+            },
+            Delete(id) {
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xoá?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy',
+                }).then((result) => {
+                    if (result.value) {
+                        fetch(`/SystemConfig/DeleteBanner?id=${id}`)
+                            .then(res => res.json())
+                            .then(data => { this.Init() })
+                    }
+                });
+            },
+            Edit(id) {
+                $("#SmallModalDiv").load(`/SystemConfig/AddEditBanner?id=${id}`, function () {
+                    $("#SmallModal").modal("show");
+                    $("#titleSmallModal").html("Cập nhật")
+                })
+            },
+            ChangeType(id) {
+                fetch(`/SystemConfig/ChangeStatusBaner?id=${id}`)
+                    .then(res => res.json())
+                    .then(data => { this.Init() })
+            },
+            ViewImg(src){
+                Swal.fire({
+                    imageUrl: `${src}`,
+                    imageWidth: 400,
+                })
+            }
+        }
+    });
+    function Save() {
+
+        var _data = new FormData()
+        _data.append("Id", $("#Id").val())
+        _data.append("IsDeleted", false)
+        _data.append("CreatedDate", $("#CreatedDate").val())
+        _data.append("Path", $("#Path").val())
+        _data.append("Status", $("#Status").val())
+        _data.append("Name", $("#Name").val())
+        _data.append("BannerFile", document.getElementById("BannerFile").files[0])
+
+        fetch("/SystemConfig/AddEditBanner", {
+            method: "POST",
+            headers: {
+                processData: false,
+                contentType: false,
+            },
+            body: _data
+        }).then(res => res.json())
+            .then(res => {
+                $('#SmallModal').modal('hide');
+                var message = "Thành công";
+                Swal.fire({
+                    title: message,
+                    icon: 'success',
+                }).then(res => {
+                    AppVueBanner.Init();
+                });
+            })
+    }
+</script>

@@ -1,0 +1,34 @@
+﻿@model tinderr.Models.AccountViewModel.RegisterViewModel;
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row my-3">
+    <div class="col-md-4 m-auto">
+        <form method="post" action="/Account/Register">
+            <h2>Tạo tài khoản mới</h2>
+            <hr />
+            <div class="form-floating">
+                <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="UserName"></label>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="PasswordHash" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="PasswordHash"></label>
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="ConfirmPassword"></label>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="InviteCode" class="form-control" aria-required="true" />
+                <label asp-for="InviteCode"></label>
+                <span asp-validation-for="InviteCode" class="text-danger"></span>
+                <span class="text-danger">@ViewBag.err</span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
+        </form>
+    </div>
+</div>

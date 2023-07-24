@@ -1,0 +1,37 @@
+﻿<div class="row" id="ConFigVue">
+    <div class="col align-content-center justify-content-center">
+        <div class="card m-auto" style="width: 20rem;">
+            <select class="text-danger form-control px-4 input-group" v-model="adminChat">
+                <option v-for="(item, index) in listUser" :value="item.userName" class="p-2">{{item.name}}</option>
+            </select>
+            <div class="card-body">
+                <h5 class="card-title">Admin nhận CSKH</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var ConFigVue = new Vue({
+        el: "#ConFigVue",
+        data: {
+            adminChat: "user1",
+            listUser:[],
+        },
+        computed: {
+
+        },
+        mounted() {
+            this.initData()
+        },
+        methods: {
+            initData(){
+                fetch("/SystemConfig/ListAddminChat")
+                .then(res=>res.json())
+                .then(data=>{
+                    this.listUser = data.data
+                })
+            }
+        },
+    })
+</script>

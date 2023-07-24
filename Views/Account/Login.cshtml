@@ -1,0 +1,190 @@
+﻿@model tinderr.Models.AccountViewModel.LoginViewModel;
+@{
+    Layout = null;
+}
+<style>
+
+    body {
+        font: 13px/20px "MONTSERRAT", Tahoma, Verdana, sans-serif;
+        color: #404040;
+        background: #ffffff;
+    }
+
+    .login {
+        position: relative;
+        margin: 30px auto;
+        padding: 20px 20px 20px;
+        width: 310px;
+        background: white;
+        border-radius: 3px;
+    }
+
+        .login:before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            bottom: -8px;
+            left: -8px;
+            z-index: -1;
+        }
+
+        .login h1 {
+            margin: -20px -20px 21px;
+            line-height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #9EACB2;
+            text-align: center;
+            text-shadow: 0 1px white;
+            border-radius: 3px 3px 0 0;
+            background-image: -webkit-linear-gradient(top, whiteffd, #eef2f5);
+            background-image: -moz-linear-gradient(top, whiteffd, #eef2f5);
+            background-image: -o-linear-gradient(top, whiteffd, #eef2f5);
+            background-image: linear-gradient(to bottom, whiteffd, #eef2f5);
+            -webkit-box-shadow: 0 1px whitesmoke;
+            box-shadow: 0 1px whitesmoke;
+        }
+
+        .login p {
+            margin: 20px 0 0;
+        }
+
+            .login p:first-child {
+                margin-top: 0;
+            }
+
+        .login input[type=text], .login input[type=password] {
+            width: 278px;
+        }
+
+        .login p.remember_me {
+            float: left;
+            margin-left: 20px;
+            line-height: 42px;
+        }
+
+            .login p.remember_me label {
+                font-size: 12px;
+                color: #9EACB2;
+                cursor: pointer;
+            }
+
+            .login p.remember_me input {
+                position: relative;
+                bottom: 1px;
+                margin-right: 4px;
+                vertical-align: middle;
+            }
+
+        .login p.submit {
+            text-align: right;
+        }
+
+    .login-help {
+        margin: 20px 0;
+        font-size: 11px;
+        color: white;
+        text-align: center;
+        text-shadow: 0 1px #2a85a1;
+    }
+
+        .login-help a {
+            color: #cce7fa;
+            text-decoration: none;
+        }
+
+            .login-help a:hover {
+                text-decoration: underline;
+            }
+
+    :-moz-placeholder {
+        color: #9EACB2 !important;
+        font-size: 13px;
+    }
+
+    ::-webkit-input-placeholder {
+        color: #B6BEC1;
+        font-size: 13px;
+    }
+
+    input {
+        font-family: 'MONTSERRAT', Tahoma, Verdana, sans-serif;
+        font-size: 12px;
+    }
+
+        input[type=text], input[type=password] {
+            margin: 4px;
+            padding: 0 10px;
+            width: 200px;
+            height: 46px;
+            color: #404040;
+            background: white;
+            border: 2px solid;
+            border-color: #9EACB2;
+            border-radius: 4px;
+        }
+
+            input[type=text]:focus, input[type=password]:focus {
+                border-color: #6EC3C7;
+                outline-color: #6EC3C7;
+                outline-offset: 2;
+            }
+
+        input[type=submit] {
+            padding: 0 40px;
+            height: 46px;
+            font-size: 12px;
+            color: #fff;
+            text-shadow: none;
+            background: #00B87F;
+            border: 1px solid;
+            border-color: #07A06D;
+            border-radius: 4px;
+        }
+
+            input[type=submit]:active {
+                background: #07A06D;
+            }
+
+            input[type=submit]:hover {
+                background: #07A06D;
+            }
+
+
+    .lt-ie9 input[type=text], .lt-ie9 input[type=password] {
+        line-height: 34px;
+    }
+
+    .register {
+        color: red;
+        text-decoration: none;
+        width: 100%;
+        text-align: center;
+    }
+</style>
+
+<div class="login">
+    <form id="account" method="post" action="/Account/Login">
+        <h1>Đăng nhập</h1>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <p class="form-floating">
+            <input asp-for="UserName" class="form-control" autocomplete="username" type="text" aria-required="true" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </p>
+        <p class="form-floating">
+            <input asp-for="Password" class="form-control" autocomplete="current-password" type="password" aria-required="true" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </p>
+        <p class="remember_me">
+            <label>
+                <input type="checkbox" asp-for="RememberMe" id="remember_me" />
+                @Html.DisplayNameFor(m => m.RememberMe)
+            </label>
+        </p>
+        <p class="submit">
+            <input type="submit" value="Đăng Nhập" />
+        </p>
+    </form>
+
+</div>

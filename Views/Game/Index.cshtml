@@ -1,0 +1,76 @@
+﻿<div id="AppVueGame" class="row mt-1">
+
+
+    <div class="container row mt-5">
+        <div class="col-12 text-center">
+            <p class="btn btn-warning">{{countDown}}</p>
+        </div>
+        <div class="col-12 text-center">
+            <p class="btn btn-success">{{random1}}</p>
+            <p class="btn btn-success">{{random2}}</p>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <table class="table table-striped" id="tableBrand">
+            <thead class="bg-gradient-warning text-primary">
+                <tr>
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Phiên</th>
+                    <th class="text-center">Kết quả</th>
+                    <th class="text-center">Xóa</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    {{connectionHub}}
+</div>
+
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript">
+
+
+    var AppVueGame = new Vue({
+        el: "#AppVueGame",
+        data: {
+            data: [],
+            connectionHub: null,
+            countDown: 0,
+            random1: 0,// 1 là xuân - 2 là hạ
+            random2: 0,// 3 là thu - 4 là đông
+        },
+        computed: {
+
+        },
+        mounted() {
+            var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+            connection.start().then( () => {
+                console.log("Kết nối thành công")
+                this.startCountdown();
+                this.listenForData();
+            }).catch(function (err) {
+                console.log("err: ", err)
+            });
+            this.connectionHub = connection;
+            
+        },
+        methods: {
+            Init() {
+
+            },
+            async startCountdown() {
+                await this.connectionHub.invoke("StartGameSession")
+            },
+            async listenForData() {
+                let currnetThis = this;
+                await this.connectionHub.on("CountdownUpdate", function (coutdown) {
+                    currnetThis.countDown = coutdown
+                })
+            }
+        }
+    });
+</script>

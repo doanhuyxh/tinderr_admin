@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\SystemConfig\AddEditBanner.cshtml" />
+    <Content Remove="Views\UserManager\EditUser.cshtml" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.16" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+		<PackageReference Include="MongoDB.Bson" Version="2.19.2" />
+		<PackageReference Include="MongoDB.Driver" Version="2.19.2" />
+		<PackageReference Include="MongoDB.Driver.Core" Version="2.19.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\upload\VideoBase64" />
+		<Folder Include="wwwroot\upload\banner" />
+		<Folder Include="wwwroot\upload\avatar" />
+		<Folder Include="wwwroot\upload\ImgAvavtarVideo" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Views\SystemConfig\AddEditBanner.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Views\SystemConfig\AddEditBanner.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\UserManager\EditUser.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Views\SystemConfig\AddEditBanner.cshtml" />
+	  <None Include="Views\UserManager\EditUser.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Views\UserManager\EditUser.cshtml" />
+	</ItemGroup>
+	
+</Project>

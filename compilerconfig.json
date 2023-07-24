@@ -1,0 +1,17 @@
+[
+  {
+    "outputFile": "wwwroot/css/custom_input_file.css",
+    "inputFile": "wwwroot/css/custom_input_file.less",
+    "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "wwwroot/css/chat_admin.css",
+    "inputFile": "wwwroot/css/chat_admin.scss",
+    "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss",
+    "minify": { "enabled": true }
+  }
+]

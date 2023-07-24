@@ -1,0 +1,52 @@
+﻿@{
+    Layout = null;
+}
+
+@model tinderr.Models.AccountViewModel.UserProFileViewModel;
+
+<form>
+    <input hidden asp-for="ApplicationUserId" />
+    <input hidden asp-for="CreateDate" />
+    <input hidden asp-for="IsActive" />
+    <input hidden asp-for="AvatarPath" />
+    <input hidden asp-for="CountWatch" />
+
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="text" class="form-control" asp-for="UserName" placeholder="Tài khoản người dùng">
+    </div>
+
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="text" class="form-control" asp-for="Name" placeholder="Tên người dùng">
+    </div>
+
+    <div class="input-group input-group-static mb-4 px-2">
+        <input type="password" class="form-control" asp-for="Password" placeholder="mật khẩu">
+    </div>
+
+    <div class="px-2">
+        <label for="AvatarFile" class="form-label">Ảnh đại diện</label>
+        <input class="form-control form-control-lg" type="file" accept="image/*" asp-for="AvatarFile">
+    </div>
+    <div class="input-group mb-4 px-2">
+        <input class="form-control" asp-for="InviteCode" placeholder="Mã mời" readonly/>
+    </div>
+    <div class="input-group mb-4 px-2">
+        <input class="form-control" asp-for="Bankname" placeholder="Ngân hàng"/>
+    </div>
+    <div class="input-group mb-4 px-2">
+        <input class="form-control" asp-for="Banknumber" placeholder="Số tài khoản"/>
+    </div>
+    <div class="input-group mb-4 px-2">
+        <input class="form-control" placeholder="Số dư" asp-for="Balance" />
+    </div>
+    <select class="form-select" asp-for="Role">
+        <option selected value="Admin">Admin</option>
+        <option value="SuperAdmin">SuperAdmin</option>
+        <option value="Member">Member</option>
+    </select>
+
+    <div class="col-12 d-inline-flex justify-content-end">
+        <button type="button" id="close" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary" onclick="Save()">Lưu thay đổi</button>
+    </div>
+</form>
