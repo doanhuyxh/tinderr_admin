@@ -329,7 +329,7 @@ namespace tinderr.Controllers
         }
 
         [SwaggerOperation("UpdateUser", Summary = "UpdateUser")]
-        [HttpGet("updateUser")]
+        [HttpPost("updateUser")]
 
         public async Task<IActionResult> UpdateUser(UpdateProFileUser vm)
         {
@@ -357,5 +357,29 @@ namespace tinderr.Controllers
                 return Ok(json);
             }
         }
+
+        [SwaggerOperation("UpdateBalace", Summary = "UpdateBalace")]
+        [HttpGet("UpdateBalace")]
+        public async Task<IActionResult> UpdateBalance(string userId)
+        {
+            JsonResultViewModel json = new JsonResultViewModel();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                json.Data = user.Balance;
+                json.IsSuccess = true;
+                json.Message = "success";
+                return Ok(json);
+
+            }
+            catch (Exception ex)
+            {
+                json.IsSuccess = false;
+                json.Message = ex.Message;
+                json.Data = ex.Data;
+                return Ok(json);
+            }
+        }
+
     }
 }

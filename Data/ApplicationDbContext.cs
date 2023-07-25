@@ -20,6 +20,7 @@ namespace tinderr.Data
         public DbSet<HistoryGameUser> HistoryGameUser { get; set; }
         public DbSet<Notify> Notify { get; set; }
         public DbSet<OtherUserChat> OtherUserChat { get; set; }
+        public DbSet<HistoryBalance> HistoryBalance { get; set; }
         
 
         

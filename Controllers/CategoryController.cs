@@ -29,7 +29,7 @@ namespace tinderr.Controllers
             JsonResultViewModel json = new JsonResultViewModel();
             
             var ds = from c in _context.Category
-                     where c.IsDeleted == false
+                     where c.IsDeleted == true
                      select new CategoryViewModel
                      {
                          Id  = c.Id,
