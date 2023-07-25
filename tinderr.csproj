@@ -6,11 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="Views\SystemConfig\AddEditBanner.cshtml" />
-    <Content Remove="Views\UserManager\EditUser.cshtml" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="MailKit" Version="4.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.16" />
@@ -46,22 +41,5 @@
 		<Folder Include="wwwroot\upload\ImgAvavtarVideo" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Views\SystemConfig\AddEditBanner.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="Views\SystemConfig\AddEditBanner.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\UserManager\EditUser.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Views\SystemConfig\AddEditBanner.cshtml" />
-	  <None Include="Views\UserManager\EditUser.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Views\UserManager\EditUser.cshtml" />
-	</ItemGroup>
 	
 </Project>

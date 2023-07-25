@@ -28,6 +28,11 @@ namespace tinderr.Controllers
             return View();
         }
 
+        public IActionResult DaW()
+        {
+            return View();
+        }
+
         // lịch sử nạp tiền
         [HttpGet]
         public IActionResult HistoryDeposit()
@@ -74,8 +79,16 @@ namespace tinderr.Controllers
                 user.Balance += amount;
                 await _userManager.UpdateAsync(user);
 
+                HistoryBalance hs = new HistoryBalance();
+                hs.UserName = userName;
+                hs.IsRecharge = true;
+                hs.Amount = amount;
+                hs.CreateDate = DateTime.Now;
+                _context.Add(hs);
+                await _context.SaveChangesAsync();
+
                 json.IsSuccess = true;
-                json.Data = user;
+                json.Data = hs;
                 json.Message = "";
                 return Ok(json);
             }
@@ -100,8 +113,16 @@ namespace tinderr.Controllers
                 user.Balance -= amount;
                 await _userManager.UpdateAsync(user);
 
+                HistoryBalance hs = new HistoryBalance();
+                hs.UserName = userName;
+                hs.IsRecharge = false;
+                hs.Amount = amount;
+                hs.CreateDate = DateTime.Now;
+                _context.Add(hs);
+                await _context.SaveChangesAsync();
+
                 json.IsSuccess = true;
-                json.Data = user;
+                json.Data = hs;
                 json.Message = "";
                 return Ok(json);
             }
