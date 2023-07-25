@@ -208,10 +208,16 @@ namespace tinderr.Controllers
                 }
                 await _userManager.UpdateAsync(user);
 
+                var currenrol = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currenrol);
+                await _userManager.AddToRoleAsync(user, "Admin");
+
                 json.Message = "";
                 json.Data = user;
                 json.IsSuccess = true;
                 return Ok(json);
+
+
             }
 
             json.Message = "Fail";

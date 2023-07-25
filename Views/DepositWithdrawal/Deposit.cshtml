@@ -1,6 +1,6 @@
-﻿<div id="AppVueWithdrawal" class="row mt-1">
+﻿<div id="AppVueDeposit" class="row mt-1">
     <div class="container">
-        <div v-on:click="AddWithdrawal" class="btn btn-success float-right">Rút</div>
+        <div v-on:click="AddWithdrawal" class="btn btn-success float-right">Nạp</div>
     </div>
     <div class="container">
         <table class="table table-striped" id="tableBrand">
@@ -37,7 +37,7 @@
                     <div class="input-group input-group-lg input-group-outline my-3">
                         <select class="form-control form-control-lg mb-3" v-model="userChoose">
                             <option selected disabled>Chọn tài khoản</option>
-                            <option v-for="(i, index) in listUser" :value="i.userName">{{i.name}}</option>
+                            <option v-for="(i, index) in listUser" :value="i.userName">{{i.name}} -- {{i.userName}}</option>
                         </select>
                     </div>
 
@@ -45,7 +45,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn bg-gradient-primary" v-on:click="Withdrawal">Rút</button>
+                    <button type="button" class="btn bg-gradient-primary" v-on:click="Withdrawal">Nạp</button>
                 </div>
             </div>
         </div>
@@ -54,8 +54,8 @@
 </div>
 
 <script type="text/javascript">
-    var AppVueWithdrawal = new Vue({
-        el: "#AppVueWithdrawal",
+    var AppVueDeposit = new Vue({
+        el: "#AppVueDeposit",
         data: {
             data: [],
             listUser: [],
@@ -70,7 +70,7 @@
         },
         methods: {
             Init() {
-                fetch("/DepositWithdrawal/HistoryWithdrawal")
+                fetch("/DepositWithdrawal/HistoryDeposit")
                     .then(res => res.json())
                     .then(data => this.data = data.data);
 
@@ -81,10 +81,10 @@
             },
             AddWithdrawal() {
                 $("#exampleModal").modal("show");
-                $("#exampleModalLabel").html("Rút tiền")
+                $("#exampleModalLabel").html("Nạp tiền")
             },
             Withdrawal() {
-                fetch(`/DepositWithdrawal/WithdrawalBalance?userName=${this.userChoose}&amount=${this.amount}`)
+                fetch(`/DepositWithdrawal/DepositBalance?userName=${this.userChoose}&amount=${this.amount}`)
                     .then(res => res.json())
                     .then(data => {
                         $("#exampleModal").modal("hide");

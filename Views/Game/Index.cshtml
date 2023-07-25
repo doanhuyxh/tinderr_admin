@@ -8,6 +8,8 @@
         <div class="col-12 text-center">
             <p class="btn btn-success">{{random1}}</p>
             <p class="btn btn-success">{{random2}}</p>
+            <p class="btn btn-success">{{random3}}</p>
+            <p class="btn btn-success">{{random4}}</p>
         </div>
     </div>
 
@@ -23,10 +25,16 @@
                 </tr>
             </thead>
             <tbody>
+                <tr v-for="(item, index) in data" :key=index>
+                    <th class="text-center">{{index+1}}</th>
+                    <th class="text-center">Phiên</th>
+                    <th class="text-center">Kết quả</th>
+                    <th class="text-center"><span class="btn btn-danger">Xóa</span></th>
+                </tr>
             </tbody>
         </table>
     </div>
-    {{connectionHub}}
+
 </div>
 
 
@@ -39,38 +47,53 @@
         data: {
             data: [],
             connectionHub: null,
-            countDown: 0,
-            random1: 0,// 1 là xuân - 2 là hạ
-            random2: 0,// 3 là thu - 4 là đông
+            countDown: 60,
+            random1: 0,// 1 là xuân
+            random2: 0,// 2 là hạ
+            random3: 0,// 3 là thu
+            random4: 0,// 4 là đông
         },
         computed: {
 
         },
         mounted() {
             var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
-            connection.start().then( () => {
+            connection.start().then(() => {
                 console.log("Kết nối thành công")
-                this.startCountdown();
-                this.listenForData();
+                this.calldata();
             }).catch(function (err) {
                 console.log("err: ", err)
             });
             this.connectionHub = connection;
-            
+            this.Init();
         },
         methods: {
             Init() {
-
+                fetch("/Game/getHistory")
+                    .then(res => res.json())
+                then(data => this.data = data.data)
             },
             async startCountdown() {
-                await this.connectionHub.invoke("StartGameSession")
+                await this.connectionHub.invoke("CountDownUpDate", this.countDown--)
             },
-            async listenForData() {
-                let currnetThis = this;
-                await this.connectionHub.on("CountdownUpdate", function (coutdown) {
-                    currnetThis.countDown = coutdown
-                })
+            async sendata() {
+                await this.connectionHub.invoke("CountDownFinish", true, false, false, true);
+                this.Init();
+            },
+            calldata() {
+                let a = setInterval(() => {
+                    if (this.countDown > 0) {
+                        this.startCountdown();
+                    }
+                    else {
+                        clearInterval(a);
+                        this.sendata();
+                        this.countDown = 60;
+                        this.calldata();
+                    }
+                }, 1000);
             }
+
         }
     });
 </script>

@@ -2,6 +2,7 @@
 {
     public class HistoryGame:EntityBase
     {
+        public string wave { get; set; }
         public bool item1 { get; set; }
         public bool item2 { get; set; }
         public bool item3 { get; set; }

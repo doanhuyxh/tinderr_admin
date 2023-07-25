@@ -12,15 +12,18 @@ namespace tinderr.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ICommon _icommon;
         private readonly UserManager<ApplicationUser> _userManager;
-        public SystemConfigController(ApplicationDbContext context, ICommon common, UserManager<ApplicationUser> userManager)
+        private readonly IConfiguration _config;
+        public SystemConfigController(ApplicationDbContext context, ICommon common, UserManager<ApplicationUser> userManager, IConfiguration config)
         {
             _context = context;
             _icommon = common;
             _userManager = userManager;
+            _config = config;
         }
 
         public IActionResult Index()
         {
+            ViewBag.adminChat = _config["ChatCofing:AdminChat"];
             return View();
         }
         public IActionResult Banner()

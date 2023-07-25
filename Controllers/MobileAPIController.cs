@@ -189,6 +189,7 @@ namespace tinderr.Controllers
                          ViewCount = vi.ViewCount,
                          ImgAvatarPath = vi.ImgAvatarPath,
                          CreatedDate = vi.CreatedDate,
+                         CategoryId = vi.CategoryId,
                      };
             JsonResultViewModel json = new JsonResultViewModel();
             json.Message = "";
@@ -211,6 +212,7 @@ namespace tinderr.Controllers
                          ViewCount = vi.ViewCount,
                          ImgAvatarPath = vi.ImgAvatarPath,
                          CreatedDate = vi.CreatedDate,
+                         CategoryId = vi.CategoryId,
                      };
             JsonResultViewModel json = new JsonResultViewModel();
             json.Message = "";
@@ -369,6 +371,38 @@ namespace tinderr.Controllers
                 json.Data = user.Balance;
                 json.IsSuccess = true;
                 json.Message = "success";
+                return Ok(json);
+
+            }
+            catch (Exception ex)
+            {
+                json.IsSuccess = false;
+                json.Message = ex.Message;
+                json.Data = ex.Data;
+                return Ok(json);
+            }
+        }
+
+        [SwaggerOperation("HistoryGame", Summary = "HistoryGame")]
+        [HttpGet("historyGame")]
+        public async Task<IActionResult> HistoryGame()
+        {
+            JsonResultViewModel json = new JsonResultViewModel();
+            try
+            {
+                json.IsSuccess = true;
+                json.Message = "success";
+
+                var rs = await (from h in _context.HistoryGame
+                         select new
+                         {
+                             xuan = h.item1 ? "Xuân" : "",
+                             ha = h.item2 ? "Hạ" : "",
+                             thu = h.item3 ? "Thu" : "",
+                             dong = h.item4 ? "Đông" : "",
+                             wave = h.wave,
+                         }).ToListAsync();
+                json.Data = rs.OrderByDescending(x=>x.wave).TakeLast(30);
                 return Ok(json);
 
             }
