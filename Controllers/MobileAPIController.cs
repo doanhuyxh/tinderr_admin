@@ -343,7 +343,7 @@ namespace tinderr.Controllers
                 user.Name = vm.Name;
                 user.Bankname = vm.BankName;
                 user.Banknumber = vm.BankNumber;
-                
+                user.AvatartPath = vm.avatar;
                 await _userManager.UpdateAsync(user);
 
                 json.IsSuccess = true;

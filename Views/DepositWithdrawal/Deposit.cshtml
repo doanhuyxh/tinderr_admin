@@ -72,11 +72,11 @@
             Init() {
                 fetch("/DepositWithdrawal/HistoryDeposit")
                     .then(res => res.json())
-                    .then(data => this.data = data.data);
+                    .then(data => this.data = data.data.reverse());
 
                 fetch("/DepositWithdrawal/getAllUser")
                     .then(res => res.json())
-                    .then(data => this.listUser = data.data);
+                    .then(data => this.listUser = data.data.reverse());
 
             },
             AddWithdrawal() {

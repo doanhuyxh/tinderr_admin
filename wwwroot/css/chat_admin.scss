@@ -61,8 +61,8 @@ a {
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 43px;
-    width: 91px;
-    padding: 10px 12px;
+    width: 4em;
+    padding: 0.5em;
 }
 
 .custom-file-upload input[type="file"] {
@@ -71,11 +71,6 @@ a {
     left: 0;
     opacity: 0;
 }
-
-.custom-file-upload span {
-    font-size: 16px;
-}
-
 
 #chatVue{
     margin-left:1em;

@@ -62,7 +62,7 @@
             Init() {
                 fetch("/Category/GetDataVideo")
                     .then(res => res.json())
-                    .then(data => this.data = data.data)
+                    .then(data => this.data = data.data.reverse())
             },
             AddVideo() {
                 $("#BigModalDiv").load(`/Category/AddEditAsset?id=0`, function () {

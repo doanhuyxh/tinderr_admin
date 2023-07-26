@@ -21,6 +21,7 @@ namespace tinderr.Controllers
         //Danh mục video
         public IActionResult Index()
         {
+            ViewData["Title"] = "Danh mục video";
             return View();
         }
 
@@ -135,6 +136,7 @@ namespace tinderr.Controllers
         //Danh mục video
         public IActionResult Asset()
         {
+            ViewData["Title"] = "Video";
             return View();
         }
         // Lấy danh sách video

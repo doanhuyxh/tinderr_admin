@@ -31,6 +31,11 @@
 
     <script src="~/lib/Vuejs/cdnjs.cloudflare.com_ajax_libs_vue_2.6.11_vue.min.js"></script>
     <script src="~/lib/Vuejs/unpkg.com_axios@1.4.0_dist_axios.min.js"></script>
+
+    <!--datatable-->
+    <link href="//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
     <link href="~/css/site.min.css" rel="stylesheet" />
 </head>
 
@@ -45,7 +50,7 @@
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <partial name="Navbar" />
         <div class="container py-4">
-            <div style="margin-left:4em; width:100%; overflow:scroll">
+            <div style="margin-left:4em; width:100%;">
             @RenderBody()
             </div>
         </div>

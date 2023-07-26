@@ -15,5 +15,7 @@ namespace tinderr.Models.AccountViewModel
 
         [Display(Name = "Số tài khoản")]
         public string? BankNumber { get; set; }
+        [Display(Name = "Ảnh đại diện")]
+        public string? avatar { get; set; }
     }
 }

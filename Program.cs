@@ -62,7 +62,7 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 
     });
-    
+
     options.AddPolicy("production1", builder =>
     {
         builder.WithOrigins("http://tinderr.id.vn").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
@@ -76,6 +76,8 @@ builder.Services.AddCors(options =>
     });
 
 });
+
+
 
 //add service system
 builder.Services.AddScoped<ICommon, Common>();
@@ -161,27 +163,6 @@ app.UseCors("production1");
 app.UseCors("production2");
 
 
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-//app.UseSwagger();
-//app.UseSwaggerUI(c =>
-//{
-//    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Documentation v1");
-//    c.RoutePrefix = string.Empty; // Hiển thị Swagger UI ngay từ root URL
-//    c.DocumentTitle = "API Documentation";
-//    c.DocExpansion(DocExpansion.List);
-//});
-
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapHub<ChatHub>("/chatHub");
-//    endpoints.MapHub<GameHub>("/gameHub");
-//});
 
 
 app.UseEndpoints(endpoints =>

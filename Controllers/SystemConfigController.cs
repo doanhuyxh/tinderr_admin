@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Newtonsoft.Json.Linq;
 using tinderr.Data;
 using tinderr.Models;
 using tinderr.Models.ViewModel;
 using tinderr.Services;
+using static MongoDB.Driver.WriteConcern;
 
 namespace tinderr.Controllers
 {
@@ -141,7 +147,7 @@ namespace tinderr.Controllers
 
             try
             {
-                if(vm.Id == 0)
+                if (vm.Id == 0)
                 {
                     banner = vm;
                     banner.CreatedDate = DateTime.Now;
@@ -151,14 +157,14 @@ namespace tinderr.Controllers
                 }
                 else
                 {
-                    banner = _context.Banner.FirstOrDefault(i=>i.Id == vm.Id);
+                    banner = _context.Banner.FirstOrDefault(i => i.Id == vm.Id);
                     if (vm.BannerFile != null)
                     {
                         vm.Path = await _icommon.UploadBannerImg(vm.BannerFile);
                     }
                     vm.CreatedDate = banner.CreatedDate;
                     _context.Entry(banner).CurrentValues.SetValues(vm);
-                     await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
                 json.IsSuccess = true;
                 json.Message = "";
@@ -200,7 +206,7 @@ namespace tinderr.Controllers
             }
             else
             {
-                no = _context.Notify.FirstOrDefault(i=>i.Id == id);
+                no = _context.Notify.FirstOrDefault(i => i.Id == id);
                 return View(no);
             }
         }
@@ -285,7 +291,7 @@ namespace tinderr.Controllers
 
         //Config hệ thống
         [HttpGet]
-        public IActionResult ListAddminChat()
+        public async Task<IActionResult> ListAddminChat()
         {
             JsonResultViewModel json = new();
             try
@@ -293,17 +299,16 @@ namespace tinderr.Controllers
                 json.IsSuccess = true;
                 json.Message = "Success";
 
+                var us = await (from u in _context.Users
+                          select new
+                          {
+                              useName= u.UserName,
+                              name = u.Name,
 
+                          }).ToListAsync();
 
-                var usersNotInMemberRole = _userManager.Users.Where(u => !_userManager.IsInRoleAsync(u, "Member").Result)
-                                                     .Select(u => new
-                                                     {
-                                                         name = u.Name,
-                                                         userName = u.UserName
-                                                     })
-                                                     .ToList();
-
-                json.Data = usersNotInMemberRole;
+                
+                json.Data = us;
 
                 return Ok(json);
             }
@@ -313,7 +318,7 @@ namespace tinderr.Controllers
                 json.Message = ex.Message;
                 return Ok(json);
             }
-           
+
         }
         public IActionResult changeRatio(string ratio)
         {
@@ -322,6 +327,46 @@ namespace tinderr.Controllers
             json.Message += ratio;
 
             return Ok(json);
+        }
+        public IActionResult updateAdmin(string admin)
+        {
+            string appSettingsPath = "appsettings.json";
+
+            // Đọc nội dung tệp appsettings.json
+            string json = System.IO.File.ReadAllText(appSettingsPath);
+
+            // Chuyển nội dung thành JObject để cập nhật giá trị cho key AdminChat
+            JObject jObject = JObject.Parse(json);
+
+            // Kiểm tra xem key "ChatCofing" có tồn tại trong tệp hay không
+            if (jObject.ContainsKey("ChatCofing"))
+            {
+                // Kiểm tra xem key "AdminChat" có tồn tại trong key "ChatCofing" hay không
+                JObject chatConfig = (JObject)jObject["ChatCofing"];
+                if (chatConfig.ContainsKey("AdminChat"))
+                {
+                    // Cập nhật giá trị cho key "AdminChat"
+                    chatConfig["AdminChat"] = admin;
+
+                    // Ghi lại nội dung đã cập nhật vào tệp appsettings.json
+                    System.IO.File.WriteAllText(appSettingsPath, jObject.ToString());
+                    return Ok();
+                }
+                else
+                {
+                    return Ok();
+                    // Xử lý khi key "AdminChat" không tồn tại trong tệp appsettings.json
+                    // Ví dụ: Ghi log hoặc thông báo lỗi
+                }
+            }
+            else
+            {
+                return Ok();
+                // Xử lý khi key "ChatCofing" không tồn tại trong tệp appsettings.json
+                // Ví dụ: Ghi log hoặc thông báo lỗi
+            }
+
+            
         }
     }
 }

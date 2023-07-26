@@ -51,7 +51,7 @@
             Init() {
                 fetch("/Category/GetDataCategory")
                     .then(res => res.json())
-                    .then(data => this.data = data.data)
+                    .then(data => this.data = data.data.reverse())
             },
             AddCategory(id) {
                 $("#SmallModalDiv").load(`/Category/AddEditCategory?id=${id}`, function () {

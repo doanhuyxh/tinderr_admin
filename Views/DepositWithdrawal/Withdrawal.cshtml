@@ -72,7 +72,7 @@
             Init() {
                 fetch("/DepositWithdrawal/HistoryWithdrawal")
                     .then(res => res.json())
-                    .then(data => this.data = data.data);
+                    .then(data => this.data = data.data.reverse());
 
                 fetch("/DepositWithdrawal/getAllUser")
                     .then(res => res.json())
