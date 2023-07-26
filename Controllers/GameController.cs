@@ -29,13 +29,15 @@ namespace tinderr.Controllers
 
 
             var rs = await (from h in _context.HistoryGame
-                           select new
-                           {
-                               xuan = h.item1 ? "Xuân" : "",
-                               ha = h.item2 ? "hạ" : "",
-                               thu = h.item3 ? "thu" : "",
-                               dong = h.item4 ? "đông" : "",
-                           }).ToListAsync();
+                            select new
+                            {
+                                xuan = h.item1 ? "Xuân" : "",
+                                ha = h.item2 ? "hạ" : "",
+                                thu = h.item3 ? "thu" : "",
+                                dong = h.item4 ? "đông" : "",
+                                wave = h.wave,
+                                date = h.CreatedDate
+                            }).ToListAsync();
             json.Data = rs;
 
             return Ok(json);

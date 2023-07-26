@@ -15,8 +15,8 @@
         <div class="card m-auto" style="width: 40rem;">
             <div class="card-body d-flex">
                 <h6 class="card-title text-nowrap p-xl-3">Tỷ lệ đặt cược</h6>
-                <input type="number" class="form-control" placeholder="tỷ lệ cược"/>
-                <span class="btn btn-success text-nowrap">Lưu</span>
+                <input type="number" class="form-control" placeholder="tỷ lệ cược" v-model="ratio" />
+                <span class="btn btn-success text-nowrap" v-on:click="changeRatio">Lưu</span>
             </div>
         </div>
     </div>
@@ -27,7 +27,8 @@
         el: "#ConFigVue",
         data: {
             adminChat: `@Html.Raw(ViewBag.adminChat)`,
-            listUser:[],
+            listUser: [],
+            ratio: 2
         },
         computed: {
 
@@ -36,13 +37,21 @@
             this.initData()
         },
         methods: {
-            initData(){
+            initData() {
                 fetch("/SystemConfig/ListAddminChat")
-                .then(res=>res.json())
-                .then(data=>{
-                    this.listUser = data.data
-                })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.listUser = data.data
+                    })
+            },
+            changeRatio() {
+                fetch("/SystemConfig/changeRatio?ratio=", this.ratio)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.listUser = data.data
+                    })
             }
         },
+
     })
 </script>

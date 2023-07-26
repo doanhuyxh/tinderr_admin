@@ -1,15 +1,30 @@
 ﻿<div id="AppVueGame" class="row mt-1">
 
 
+    <div class="col d-flex">
+        <span class="btn" v-bind:class="{ 'btn-success': random1 }" v-on:click="adminconfig(0)">Xuân</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random2 }" v-on:click="adminconfig(1)">Hạ</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random3 }" v-on:click="adminconfig(2)">Thu</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random4 }" v-on:click="adminconfig(3)">Đông</span>
+        <span class="btn" v-bind:class="{ 'btn-success': adminconfig1 }">Admin sửa kết quả phiên hiện tại</span>
+    </div>
+
     <div class="container row mt-5">
+        <div class="col-12 text-center">
+            <p class="text-danger">Phiên hiện tại</p>
+        </div>
         <div class="col-12 text-center">
             <p class="btn btn-warning">{{countDown}}</p>
         </div>
         <div class="col-12 text-center">
-            <p class="btn btn-success">{{random1}}</p>
-            <p class="btn btn-success">{{random2}}</p>
-            <p class="btn btn-success">{{random3}}</p>
-            <p class="btn btn-success">{{random4}}</p>
+            <p class="text-success">Kết quả</p>
+        </div>
+
+        <div class="col-12 text-center">
+            <p class="btn" v-bind:class="{ 'btn-success': random1 }">Xuân</p>
+            <p class="btn" v-bind:class="{ 'btn-success': random2 }">Hạ</p>
+            <p class="btn" v-bind:class="{ 'btn-success': random3 }">Thu</p>
+            <p class="btn" v-bind:class="{ 'btn-success': random4 }">Đông</p>
         </div>
     </div>
 
@@ -21,15 +36,13 @@
                     <th class="text-center">STT</th>
                     <th class="text-center">Phiên</th>
                     <th class="text-center">Kết quả</th>
-                    <th class="text-center">Xóa</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(item, index) in data" :key=index>
                     <th class="text-center">{{index+1}}</th>
-                    <th class="text-center">Phiên</th>
-                    <th class="text-center">Kết quả</th>
-                    <th class="text-center"><span class="btn btn-danger">Xóa</span></th>
+                    <th class="text-center">{{item.wave}}</th>
+                    <th class="text-center">{{item.xuan}} {{item.ha}} {{item.thu}} {{item.dong}} </th>
                 </tr>
             </tbody>
         </table>
@@ -48,10 +61,11 @@
             data: [],
             connectionHub: null,
             countDown: 60,
-            random1: 0,// 1 là xuân
-            random2: 0,// 2 là hạ
-            random3: 0,// 3 là thu
-            random4: 0,// 4 là đông
+            random1: false,// 1 là xuân
+            random2: false,// 2 là hạ
+            random3: false,// 3 là thu
+            random4: false,// 4 là đông
+            adminconfig1: false
         },
         computed: {
 
@@ -71,13 +85,15 @@
             Init() {
                 fetch("/Game/getHistory")
                     .then(res => res.json())
-                then(data => this.data = data.data)
+                    .then(data => {
+                        this.data = data.data.reverse()
+                    })
             },
             async startCountdown() {
                 await this.connectionHub.invoke("CountDownUpDate", this.countDown--)
             },
             async sendata() {
-                await this.connectionHub.invoke("CountDownFinish", true, false, false, true);
+                await this.connectionHub.invoke("CountDownFinish", this.random1, this.random2, this.random3, this.random4);
                 this.Init();
             },
             calldata() {
@@ -87,11 +103,66 @@
                     }
                     else {
                         clearInterval(a);
+                        if (!this.adminconfig1){
+                        this.setRandomTrue();
+                        this.setRandomTrue();
+                        }
                         this.sendata();
                         this.countDown = 60;
+                        setTimeout(() => { this.default(); }, 3000);
                         this.calldata();
                     }
                 }, 1000);
+            },
+            setRandomTrue() {
+                // Tạo số ngẫu nhiên từ 0 đến 3 (bao gồm cả 0 và 3)
+                const randomNumber = Math.floor(Math.random() * 4);
+
+                // Thiết lập một trong các trường random là true dựa vào số ngẫu nhiên
+                switch (randomNumber) {
+                    case 0:
+                        this.random1 = true;
+                        break;
+                    case 1:
+                        this.random2 = true;
+                        break;
+                    case 2:
+                        this.random3 = true;
+                        break;
+                    case 3:
+                        this.random4 = true;
+                        break;
+                    default:
+                        break;
+                }
+            },
+            default() {
+                this.random1 = false;
+                this.random2 = false;
+                this.random3 = false;
+                this.random4 = false;
+                this.adminconfig = false;
+            },
+            adminconfig(rs){
+
+                this.adminconfig1 = true;
+
+                switch (rs) {
+                    case 0:
+                        this.random1 = !this.random1;
+                        break;
+                    case 1:
+                        this.random2 = !this.random2;
+                        break;
+                    case 2:
+                        this.random3 = !this.random3;
+                        break;
+                    case 3:
+                        this.random4 = !this.random4;
+                        break;
+                    default:
+                        break;
+                }
             }
 
         }

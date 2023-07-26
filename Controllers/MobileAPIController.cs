@@ -415,5 +415,50 @@ namespace tinderr.Controllers
             }
         }
 
+        [SwaggerOperation("ResultGame", Summary = "ResultGame")]
+        [HttpPost("ResultGameUser")]
+        public async Task<IActionResult> ResultGameUser(ResultGameUser req)
+        {
+            JsonResultViewModel json = new JsonResultViewModel();
+            try
+            {
+                json.IsSuccess = true;
+                json.Message = "success";
+
+                var user = await _userManager.FindByIdAsync(req.UserId);
+
+                if(user == null)
+                {
+                    json.IsSuccess = false;
+                    json.Message = "Not found";
+                    json.Data = null;
+                    return Ok(json);
+                }
+
+                if (req.status)
+                {
+                    user.Balance += req.Amount;
+                    await _userManager.UpdateAsync(user);
+                    json.Data = user;
+
+                }
+                else
+                {
+                    user.Balance -= req.Amount;
+                    await _userManager.UpdateAsync(user);
+                    json.Data = user;
+                }
+               
+                return Ok(json);
+
+            }
+            catch (Exception ex)
+            {
+                json.IsSuccess = false;
+                json.Message = ex.Message;
+                json.Data = ex.Data;
+                return Ok(json);
+            }
+        }
     }
 }

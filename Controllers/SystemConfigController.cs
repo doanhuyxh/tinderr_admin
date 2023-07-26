@@ -18,7 +18,11 @@ namespace tinderr.Controllers
             _context = context;
             _icommon = common;
             _userManager = userManager;
-            _config = config;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            _config = builder.Build();
         }
 
         public IActionResult Index()
@@ -289,14 +293,17 @@ namespace tinderr.Controllers
                 json.IsSuccess = true;
                 json.Message = "Success";
 
-                var user = from u in _userManager.GetUsersInRoleAsync("Admin").Result
-                           select new
-                           {
-                               name = u.Name,
-                               userName = u.UserName,
-                           };
 
-                json.Data = user;
+
+                var usersNotInMemberRole = _userManager.Users.Where(u => !_userManager.IsInRoleAsync(u, "Member").Result)
+                                                     .Select(u => new
+                                                     {
+                                                         name = u.Name,
+                                                         userName = u.UserName
+                                                     })
+                                                     .ToList();
+
+                json.Data = usersNotInMemberRole;
 
                 return Ok(json);
             }
@@ -306,6 +313,15 @@ namespace tinderr.Controllers
                 json.Message = ex.Message;
                 return Ok(json);
             }
+           
+        }
+        public IActionResult changeRatio(string ratio)
+        {
+            JsonResultViewModel json = new();
+            json.IsSuccess = true;
+            json.Message += ratio;
+
+            return Ok(json);
         }
     }
 }
