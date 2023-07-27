@@ -2,10 +2,10 @@
 
 
     <div class="col d-flex">
-        <span class="btn" v-bind:class="{ 'btn-success': random1 }" v-on:click="adminconfig(0)">Xuân</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random2 }" v-on:click="adminconfig(1)">Hạ</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random3 }" v-on:click="adminconfig(2)">Thu</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random4 }" v-on:click="adminconfig(3)">Đông</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random1 }" v-on:click="adminconfig(1)">Xuân</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random2 }" v-on:click="adminconfig(2)">Hạ</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random3 }" v-on:click="adminconfig(3)">Thu</span>
+        <span class="btn" v-bind:class="{ 'btn-success': random4 }" v-on:click="adminconfig(4)">Đông</span>
         <span class="btn" v-bind:class="{ 'btn-success': adminconfig1 }">Admin sửa kết quả phiên hiện tại</span>
     </div>
 
@@ -42,7 +42,7 @@
                 <tr v-for="(item, index) in data" :key=index>
                     <th class="text-center">{{index+1}}</th>
                     <th class="text-center">{{item.wave}}</th>
-                    <th class="text-center">{{item.xuan}} {{item.ha}} {{item.thu}} {{item.dong}} </th>
+                    <th class="text-center">{{item.item1}} {{item.item2}}</th>
                 </tr>
             </tbody>
         </table>
@@ -60,12 +60,14 @@
         data: {
             data: [],
             connectionHub: null,
-            countDown: 60,
+            countDown: 10,
             random1: false,// 1 là xuân
             random2: false,// 2 là hạ
             random3: false,// 3 là thu
             random4: false,// 4 là đông
-            adminconfig1: false
+            adminconfig1: false,
+            item1: 0,
+            item2: 0
         },
         computed: {
 
@@ -103,16 +105,44 @@
                     }
                     else {
                         clearInterval(a);
-                        if (!this.adminconfig1){
-                        this.setRandomTrue();
-                        this.setRandomTrue();
+                        let item1 = 0;
+                        let item2 = 0;
+                        if (!this.adminconfig1) {
+                            this.setRandomTrue();
+                            this.setRandomTrue();
+                        // trả data về từ đây
+                        item1 = this.getRandomNumberBetween(1,2);
+                        item2 = this.getRandomNumberBetween(3, 4);  
                         }
-                        this.sendata();
-                        this.countDown = 60;
-                        setTimeout(() => { this.default(); }, 3000);
+
+                        if (item1 == 1) {
+                            this.random1 = true;
+                        }else{
+                            this.random2 = true;
+                        }
+                        if (item2 == 3){
+                            this.random3 = true;
+                        }else{
+                            this.random4 = true;
+                        }
+
+                        this.connectionHub.invoke("CountDownFinish", item1, item2);
+                        this.Init();
+                        this.countDown = 10;
+                        this.adminconfig1 = false;
+                        setTimeout(() => { this.reset(); }, 3000);
                         this.calldata();
                     }
                 }, 1000);
+            },
+            getRandomNumbers() {
+                let list = [1, 2, 3, 4];
+                let count = 2;
+                const shuffledList = list.slice().sort(() => 0.5 - Math.random());
+                return shuffledList.slice(0, count);
+            },
+            getRandomNumberBetween(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
             },
             setRandomTrue() {
                 // Tạo số ngẫu nhiên từ 0 đến 3 (bao gồm cả 0 và 3)
@@ -120,16 +150,16 @@
 
                 // Thiết lập một trong các trường random là true dựa vào số ngẫu nhiên
                 switch (randomNumber) {
-                    case 0:
+                    case 1:
                         this.random1 = true;
                         break;
-                    case 1:
+                    case 2:
                         this.random2 = true;
                         break;
-                    case 2:
+                    case 3:
                         this.random3 = true;
                         break;
-                    case 3:
+                    case 4:
                         this.random4 = true;
                         break;
                     default:
@@ -143,26 +173,39 @@
                 this.random4 = false;
                 this.adminconfig = false;
             },
-            adminconfig(rs){
+            adminconfig(rs) {
 
                 this.adminconfig1 = true;
 
                 switch (rs) {
                     case 0:
                         this.random1 = !this.random1;
+                        this.item1 = 1
                         break;
                     case 1:
                         this.random2 = !this.random2;
+                        this.item1 = 2
                         break;
                     case 2:
                         this.random3 = !this.random3;
+                        this.item2 = 1
                         break;
                     case 3:
                         this.random4 = !this.random4;
+                        this.item2 = 2
                         break;
                     default:
                         break;
                 }
+            },
+            reset(){
+                this.random1 = false;
+                this.random2 = false;
+                this.random3 = false;
+                this.random4 = false;
+                this.adminconfig1 = false;
+                this.item1 = 0;
+                this.item2 = 0;
             }
 
         }

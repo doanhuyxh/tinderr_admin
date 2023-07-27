@@ -25,14 +25,12 @@ namespace tinderr.Hubs
             await Clients.All.SendAsync("UpdateCountDown", count);
         }
         
-        public async Task CountDownFinish(bool random_1, bool random_2, bool random_3, bool random_4)
+        public async Task CountDownFinish(int item1, int item2)
         {
 
             HistoryGame hs = new HistoryGame();
-            hs.item1 = random_1;
-            hs.item2 = random_2;
-            hs.item3 = random_3;
-            hs.item4 = random_4;
+            hs.item1 = item2;
+            hs.item2 = item2;
             hs.CreatedDate = DateTime.Now;
             hs.wave = DateTime.Now.Ticks.ToString();    
             hs.IsDeleted = false;
@@ -40,7 +38,7 @@ namespace tinderr.Hubs
             await _context.SaveChangesAsync();
 
             count = countDown;
-            await Clients.All.SendAsync("CountDownFinishClient", random_1, random_2, random_2, random_2);
+            await Clients.All.SendAsync("CountDownFinishClient", item1, item2);
         }
         
     }

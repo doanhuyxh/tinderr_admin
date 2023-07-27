@@ -3,9 +3,8 @@
     public class HistoryGame:EntityBase
     {
         public string wave { get; set; }
-        public bool item1 { get; set; }
-        public bool item2 { get; set; }
-        public bool item3 { get; set; }
-        public bool item4 { get; set; }
+        public int item1 { get; set; } // quy định 1 là xuân 2 là hạ
+        public int item2 { get; set; } // quy định 3 là thu 4 là đông
+        
     }
 }

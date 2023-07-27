@@ -396,10 +396,8 @@ namespace tinderr.Controllers
                 var rs = await (from h in _context.HistoryGame
                          select new
                          {
-                             xuan = h.item1 ? "Xuân" : "",
-                             ha = h.item2 ? "Hạ" : "",
-                             thu = h.item3 ? "Thu" : "",
-                             dong = h.item4 ? "Đông" : "",
+                             item1 = h.item1 == 1 ? "xuân" : "hạ",
+                             item2 = h.item2 == 3 ? "thu" : "đông",
                              wave = h.wave,
                          }).ToListAsync();
                 json.Data = rs.OrderByDescending(x=>x.wave).TakeLast(30);
