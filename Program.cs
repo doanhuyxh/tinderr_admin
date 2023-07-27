@@ -158,9 +158,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors("CorsPolicy");
 app.UseCors("production1");
 app.UseCors("production2");
+app.UseCors("CorsPolicy");
 
 
 
