@@ -1,12 +1,12 @@
 ﻿<div id="AppVueGame" class="row mt-1">
 
 
-    <div class="col d-flex">
-        <span class="btn" v-bind:class="{ 'btn-success': random1 }" v-on:click="adminconfig(1)">Xuân</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random2 }" v-on:click="adminconfig(2)">Hạ</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random3 }" v-on:click="adminconfig(3)">Thu</span>
-        <span class="btn" v-bind:class="{ 'btn-success': random4 }" v-on:click="adminconfig(4)">Đông</span>
-        <span class="btn" v-bind:class="{ 'btn-success': adminconfig1 }">Admin sửa kết quả phiên hiện tại</span>
+    <div class="d-flex justify-content-evenly">
+        <span class="btn border" v-bind:class="{ 'btn-success': adminconfig1 }">Admin sửa kết quả phiên hiện tại</span>
+        <span class="btn border" v-bind:class="{ 'btn-success': XuanHaThuDong[0] == 1 }" v-on:click="adminconfig(1)">Xuân</span>
+        <span class="btn border" v-bind:class="{ 'btn-success': XuanHaThuDong[1] == 2 }" v-on:click="adminconfig(2)">Hạ</span>
+        <span class="btn border" v-bind:class="{ 'btn-success': XuanHaThuDong[2] == 3}" v-on:click="adminconfig(3)">Thu</span>
+        <span class="btn border" v-bind:class="{ 'btn-success': XuanHaThuDong[3] == 4}" v-on:click="adminconfig(4)">Đông</span>
     </div>
 
     <div class="container row mt-5">
@@ -21,10 +21,10 @@
         </div>
 
         <div class="col-12 text-center">
-            <p class="btn" v-bind:class="{ 'btn-success': random1 }">Xuân</p>
-            <p class="btn" v-bind:class="{ 'btn-success': random2 }">Hạ</p>
-            <p class="btn" v-bind:class="{ 'btn-success': random3 }">Thu</p>
-            <p class="btn" v-bind:class="{ 'btn-success': random4 }">Đông</p>
+            <p class="btn" v-bind:class="{ 'btn-success': XuanHaThuDong[0] == 1}">Xuân</p>
+            <p class="btn" v-bind:class="{ 'btn-success': XuanHaThuDong[1] == 2}">Hạ</p>
+            <p class="btn" v-bind:class="{ 'btn-success': XuanHaThuDong[2] == 3}">Thu</p>
+            <p class="btn" v-bind:class="{ 'btn-success': XuanHaThuDong[3] == 4}">Đông</p>
         </div>
     </div>
 
@@ -61,10 +61,7 @@
             data: [],
             connectionHub: null,
             countDown: 10,
-            random1: false,// 1 là xuân
-            random2: false,// 2 là hạ
-            random3: false,// 3 là thu
-            random4: false,// 4 là đông
+            XuanHaThuDong: [0, 0, 0, 0],
             adminconfig1: false,
             item1: 0,
             item2: 0
@@ -94,43 +91,27 @@
             async startCountdown() {
                 await this.connectionHub.invoke("CountDownUpDate", this.countDown--)
             },
-            async sendata() {
-                await this.connectionHub.invoke("CountDownFinish", this.random1, this.random2, this.random3, this.random4);
-                this.Init();
-            },
             calldata() {
+                //lấy 2 số ngẫu nhiên
+                let item = this.getRandomNumbers()
+
+                let item1 = item[0];
+                let item2 = item[1];
+
+                this.adminconfig(item1);
+                this.adminconfig(item2);
+
                 let a = setInterval(() => {
                     if (this.countDown > 0) {
                         this.startCountdown();
                     }
                     else {
                         clearInterval(a);
-                        let item1 = 0;
-                        let item2 = 0;
-                        if (!this.adminconfig1) {
-                            this.setRandomTrue();
-                            this.setRandomTrue();
-                        // trả data về từ đây
-                        item1 = this.getRandomNumberBetween(1,2);
-                        item2 = this.getRandomNumberBetween(3, 4);  
-                        }
-
-                        if (item1 == 1) {
-                            this.random1 = true;
-                        }else{
-                            this.random2 = true;
-                        }
-                        if (item2 == 3){
-                            this.random3 = true;
-                        }else{
-                            this.random4 = true;
-                        }
-
                         this.connectionHub.invoke("CountDownFinish", item1, item2);
                         this.Init();
                         this.countDown = 10;
                         this.adminconfig1 = false;
-                        setTimeout(() => { this.reset(); }, 3000);
+                        this.reset();
                         this.calldata();
                     }
                 }, 1000);
@@ -144,69 +125,47 @@
             getRandomNumberBetween(min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             },
-            setRandomTrue() {
-                // Tạo số ngẫu nhiên từ 0 đến 3 (bao gồm cả 0 và 3)
-                const randomNumber = Math.floor(Math.random() * 4);
-
-                // Thiết lập một trong các trường random là true dựa vào số ngẫu nhiên
-                switch (randomNumber) {
+            adminconfig(rs) {
+                switch (rs) {
                     case 1:
-                        this.random1 = true;
+                        if (this.XuanHaThuDong[0] == 0) {
+                            this.XuanHaThuDong[0] = 1
+                        }else{
+                            this.XuanHaThuDong[0] = 0
+                        }
                         break;
                     case 2:
-                        this.random2 = true;
+                        if (this.XuanHaThuDong[1] == 0) {
+                            this.XuanHaThuDong[1] = 2
+                        } else {
+                            this.XuanHaThuDong[0] = 0
+                        }
                         break;
                     case 3:
-                        this.random3 = true;
+                        if (this.XuanHaThuDong[2] == 0) {
+                            this.XuanHaThuDong[2] = 3
+                        } else {
+                            this.XuanHaThuDong[0] = 0
+                        }
                         break;
                     case 4:
-                        this.random4 = true;
-                        break;
-                    default:
-                        break;
-                }
-            },
-            default() {
-                this.random1 = false;
-                this.random2 = false;
-                this.random3 = false;
-                this.random4 = false;
-                this.adminconfig = false;
-            },
-            adminconfig(rs) {
-
-                this.adminconfig1 = true;
-
-                switch (rs) {
-                    case 0:
-                        this.random1 = !this.random1;
-                        this.item1 = 1
-                        break;
-                    case 1:
-                        this.random2 = !this.random2;
-                        this.item1 = 2
-                        break;
-                    case 2:
-                        this.random3 = !this.random3;
-                        this.item2 = 1
-                        break;
-                    case 3:
-                        this.random4 = !this.random4;
-                        this.item2 = 2
+                        if (this.XuanHaThuDong[3] == 0) {
+                            this.XuanHaThuDong[3] = 4
+                        } else {
+                            this.XuanHaThuDong[0] = 0
+                        }
                         break;
                     default:
                         break;
                 }
             },
             reset(){
-                this.random1 = false;
-                this.random2 = false;
-                this.random3 = false;
-                this.random4 = false;
-                this.adminconfig1 = false;
-                this.item1 = 0;
-                this.item2 = 0;
+                this.XuanHaThuDong[0] = 0;
+                this.XuanHaThuDong[1] = 0;
+                this.XuanHaThuDong[2] = 0;
+                this.XuanHaThuDong[3] = 0;
             }
+
 
         }
     });

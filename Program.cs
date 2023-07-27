@@ -59,22 +59,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        builder.WithOrigins("http://tinderr.id.vn", "https://tinderr.id.vn", "http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 
     });
-
-    options.AddPolicy("production1", builder =>
-    {
-        builder.WithOrigins("http://tinderr.id.vn").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-
-    });
-
-    options.AddPolicy("production2", builder =>
-    {
-        builder.WithOrigins("https://tinderr.id.vn").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-
-    });
-
 });
 
 
@@ -159,8 +146,7 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("CorsPolicy");
-app.UseCors("production1");
-app.UseCors("production2");
+
 
 
 

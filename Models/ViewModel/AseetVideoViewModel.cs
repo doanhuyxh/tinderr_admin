@@ -13,7 +13,7 @@ namespace tinderr.Models.ViewModel
         public bool Status { get; set; }
         public bool Outstanding { get; set; }
         [Display(Name = "Danh mục video")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public string? Base64Video { get; set; }
         [Display(Name = "Ảnh đại diện")]
         public IFormFile? AvatarFile { get; set; }
@@ -46,7 +46,7 @@ namespace tinderr.Models.ViewModel
                 VideoLinkPath = vm.VideoLinkPath??"",
                 VideoName = vm.VideoName??"",
                 ViewCount = vm.ViewCount,
-                CategoryId = vm.CategoryId,
+                CategoryId = vm.CategoryId??0,
                 CreatedDate = vm.CreatedDate,
                 ImgAvatarPath = vm.ImgAvatarPath??"",
                 IsDeleted = vm.IsDeleted,

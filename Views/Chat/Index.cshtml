@@ -153,18 +153,22 @@
     });
 
     connection.on("ReceiveMessageToUser", function (user, adminChat, messange) {
-
-
-
+        getOtherUser();
         if (currentUser != user) {
+            Swal.fire({
+                position: 'top-end',
+                title: `tin nhắn mới từ ${user}`,
+                showConfirmButton: false,
+                timer: 500,
+                backdrop: false
+            })
             document.querySelector(`.${user}`).classList.add("bg-warning");
             return;
         }
-
         let ul = document.getElementById("Chat_Message_Box");
         let li = document.createElement("p");
 
-        li.innerHTML = `<p class="text-start fs-2">${messange}</p>`
+        li.innerHTML = `<p class="text-start fs-4">${messange}</p>`
 
         ul.appendChild(li)
 
@@ -178,9 +182,9 @@
 
         if (adminChat == currentAdmin) {
 
-            li.innerHTML = `<p class="text-end fs-2">${messange}</p>`
+            li.innerHTML = `<p class="text-end fs-4">${messange}</p>`
         } else {
-            li.innerHTML = `<p class="text-start fs-2">${messange}</p>`
+            li.innerHTML = `<p class="text-start fs-4">${messange}</p>`
         };
 
         ul.appendChild(li);
@@ -202,9 +206,9 @@
                     let li = document.createElement("li")
                     if (item.fromUser == currentAdmin) {
 
-                        li.innerHTML = `<p class="text-end fs-2">${item.content}</p>`
+                        li.innerHTML = `<p class="text-end fs-4">${item.content}</p>`
                     } else {
-                        li.innerHTML = `<p class="text-start fs-2">${item.content}</p>`
+                        li.innerHTML = `<p class="text-start fs-4">${item.content}</p>`
                     };
 
                     boxChat.appendChild(li);
@@ -233,7 +237,7 @@
             .then(res => res.json())
             .then(data => {
                 $('#preloader').fadeOut();
-
+                data = data.reverse();
                 let tbody = document.getElementById("tbodyDanhSachChartOther");
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i];

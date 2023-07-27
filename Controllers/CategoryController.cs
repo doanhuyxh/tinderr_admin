@@ -215,7 +215,7 @@ namespace tinderr.Controllers
                         aseetVideo.VideoName = vm.VideoName;
                         aseetVideo.ViewCount = vm.ViewCount;
                         aseetVideo.Outstanding = vm.Outstanding;
-                        aseetVideo.CategoryId = vm.CategoryId;
+                        aseetVideo.CategoryId = vm.CategoryId ?? 0;
                         _context.Update(aseetVideo);
                         await _context.SaveChangesAsync();
 

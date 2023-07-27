@@ -11,11 +11,9 @@
     <input hidden asp-for="Outstanding" />
     <input hidden asp-for="Status" />
     <div class="input-group input-group-outline is-valid my-3">
-        <label asp-for="VideoName" class="form-label"></label>
-        <input asp-for="VideoName" class="form-control" />
+        <input asp-for="VideoName" class="form-control" placeholder="Tên video"/>
         <span asp-validation-for="VideoName" class="text-danger"></span>
     </div>
-    
     <div class="form-group">
         <label for="AvatarFile" class="attachment">
             <div class="row btn-file">
