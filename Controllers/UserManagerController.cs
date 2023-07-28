@@ -8,7 +8,7 @@ using tinderr.Services;
 
 namespace tinderr.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class UserManagerController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -49,6 +49,7 @@ namespace tinderr.Controllers
                          Banknumber = u.Banknumber,
                          CountWatch = u.CountWatch,
                          ApplicationUserId = u.Id,
+                         IsNap250k = u.IsNap250k,
                          CreateDate = u.CreateDate,
                          Role = roles.FirstOrDefault(r => _userManager.IsInRoleAsync(u, r.Name).Result)?.Name // Retrieve the first role of the use
                      };
@@ -100,13 +101,13 @@ namespace tinderr.Controllers
                 user.Name = vm.Name;
                 user.IsActive = true;
                 user.AvatartPath = await _icommon.UploadAvatarUser(vm.AvatarFile);
-                user.InviteCode = vm.InviteCode;
+                user.InviteCode = vm.InviteCode ?? "";
                 user.InvitedCount = 0;
                 user.Balance = vm.Balance;
                 user.CountWatch = vm.CountWatch;
-                user.Bankname = vm.Bankname;
-                user.Banknumber = vm.Banknumber;
-                
+                user.Bankname = vm.Bankname??"";
+                user.Banknumber = vm.Banknumber??"";
+                user.IsNap250k = false;
                 await _userManager.CreateAsync(user, vm.Password);
                 await _userManager.AddToRoleAsync(user, vm.Role);
 
@@ -120,8 +121,9 @@ namespace tinderr.Controllers
 
             user.Name = vm.Name;
             user.Balance = vm.Balance;
-            user.Banknumber= vm.Banknumber;
-            user.Bankname = vm.Bankname;
+            user.Banknumber= vm.Banknumber ?? "";
+            user.Bankname = vm.Bankname ?? "";
+            user.IsNap250k= false;
 
             if(vm.AvatarFile != null)
             {
@@ -210,7 +212,7 @@ namespace tinderr.Controllers
 
                 var currenrol = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, currenrol);
-                await _userManager.AddToRoleAsync(user, "Admin");
+                await _userManager.AddToRoleAsync(user, edit.Role);
 
                 json.Message = "";
                 json.Data = user;

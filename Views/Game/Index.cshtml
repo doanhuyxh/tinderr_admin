@@ -60,7 +60,7 @@
         data: {
             data: [],
             connectionHub: null,
-            countDown: 10,
+            countDown: 60,
             XuanHaThuDong: [0, 0, 0, 0],
             adminconfig1: false,
             item1: 0,
@@ -109,7 +109,7 @@
                         clearInterval(a);
                         this.connectionHub.invoke("CountDownFinish", item1, item2);
                         this.Init();
-                        this.countDown = 10;
+                        this.countDown = 60;
                         this.adminconfig1 = false;
                         this.reset();
                         this.calldata();

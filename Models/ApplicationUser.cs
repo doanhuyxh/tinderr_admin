@@ -8,6 +8,7 @@ namespace tinderr.Models
         public string? Name { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public string? Ip { set; get; }
+        public Boolean IsNap250k { set; get; }
         public string InviteCode { get; set; }
         public int InvitedCount { get; set; }
         public int Balance { get; set; }

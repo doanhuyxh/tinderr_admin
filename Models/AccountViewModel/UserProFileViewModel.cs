@@ -31,6 +31,8 @@ namespace tinderr.Models.AccountViewModel
         [Display(Name = "Số lượt xem còn lại")]
         public int CountWatch { get; set; }
         [Display(Name = "Ngày tạo")]
+        public Boolean? IsNap250k { get; set; }
+        [Display(Name = "Ngày tạo")]
         public DateTime CreateDate { get; set; }
         public string? Bankname { get; set; }
         public string? Banknumber { get; set; }

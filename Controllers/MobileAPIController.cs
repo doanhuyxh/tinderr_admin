@@ -78,6 +78,7 @@ namespace tinderr.Controllers
                 user.Balance = 0;
                 user.Banknumber = "";
                 user.Bankname = "";
+                user.IsNap250k = false;
 
                 var result = await _userManager.CreateAsync(user, vm.PasswordHash);
 
@@ -230,7 +231,7 @@ namespace tinderr.Controllers
             json.Message = "Allowed";
             json.IsSuccess = true;
             var user = await _userManager.FindByIdAsync(userId);
-            if (user.CountWatch > 0 || user.Balance > priceVideo)
+            if (user.IsNap250k == true)
             {
 
                 AseetVideo asset = new AseetVideo();
@@ -238,21 +239,6 @@ namespace tinderr.Controllers
                 asset.ViewCount += 1;
                 _context.Update(asset);
                 await _context.SaveChangesAsync();
-
-                if (user.CountWatch > 0)
-                {
-                    user.CountWatch -= 1;
-                    await _userManager.UpdateAsync(user);
-                    return Ok(json);
-                }
-
-                if (user.Balance > priceVideo)
-                {
-                    user.Balance -= priceVideo;
-                    await _userManager.UpdateAsync(user);
-                    return Ok(json);
-                }
-
             }
 
             json.IsSuccess = false;
@@ -396,8 +382,8 @@ namespace tinderr.Controllers
                 var rs = await (from h in _context.HistoryGame
                          select new
                          {
-                             item1 = h.item1 == 1 ? "xuân" : "hạ",
-                             item2 = h.item2 == 3 ? "thu" : "đông",
+                             item1 = h.item1 == 1 ? "Xuân" : "Hạ",
+                             item2 = h.item2 == 3 ? "Thu" : "Đông",
                              wave = h.wave,
                          }).ToListAsync();
                 json.Data = rs.OrderByDescending(x=>x.wave).TakeLast(30);
@@ -433,7 +419,7 @@ namespace tinderr.Controllers
                     return Ok(json);
                 }
 
-                if (req.status)
+                if (req.status == true)
                 {
                     user.Balance += req.Amount;
                     await _userManager.UpdateAsync(user);

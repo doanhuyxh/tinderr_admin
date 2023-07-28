@@ -77,6 +77,10 @@ namespace tinderr.Controllers
             try
             {
                 user.Balance += amount;
+                if (amount == 250)
+                {
+                    user.IsNap250k = true;
+                }
                 await _userManager.UpdateAsync(user);
 
                 HistoryBalance hs = new HistoryBalance();

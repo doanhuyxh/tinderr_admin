@@ -44,8 +44,10 @@
         toggleButton.addEventListener('click', function () {
             if (menu.style.display === 'none') {
                 menu.style.display = 'block'; // Hiện menu nếu đang ẩn
+                document.getElementById("layout_view").style.marginLeft = "4em";
             } else {
                 menu.style.display = 'none';  // Ẩn menu nếu đang hiện
+                document.getElementById("layout_view").style.marginLeft = "-6em";
             }
         });
     });

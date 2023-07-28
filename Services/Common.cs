@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System;
 using tinderr.Data;
+using NReco.VideoConverter;
 
 namespace tinderr.Services
 {
@@ -87,7 +88,26 @@ namespace tinderr.Services
                 {
                     file.CopyTo(memoryStream);
                     byte[] videoBytes = memoryStream.ToArray();
-                    string base64String = Convert.ToBase64String(videoBytes);
+
+                    // Save the memoryStream to a temporary file
+                    string tempFilePath = Path.GetTempFileName();
+                    File.WriteAllBytes(tempFilePath, videoBytes);
+
+                    // Nén video sử dụng NReco.VideoConverter
+                    string compressedFilePath = Path.GetTempFileName() + ".mp4"; // Temporary file for the compressed video
+                    var converter = new FFMpegConverter();
+                    converter.Invoke($"-i {tempFilePath} -b:v 500k {compressedFilePath}"); // Giảm bitrate xuống 500kbit/s
+                    converter.ConvertMedia(tempFilePath, compressedFilePath, Format.mp4);
+
+                    // Read the compressed video back to a MemoryStream
+                    byte[] compressedVideoBytes = File.ReadAllBytes(compressedFilePath);
+
+                    // Delete the temporary files
+                    File.Delete(tempFilePath);
+                    File.Delete(compressedFilePath);
+
+                    string base64String = Convert.ToBase64String(compressedVideoBytes);
+
                     return base64String;
                 }
             }
@@ -95,6 +115,7 @@ namespace tinderr.Services
             {
                 return ex.Message;
             }
+
         }
 
         public async Task<string> UploadAvatarUser(IFormFile file)

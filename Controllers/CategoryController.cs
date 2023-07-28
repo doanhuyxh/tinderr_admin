@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using tinderr.Data;
 using tinderr.Models;
 using tinderr.Models.ViewModel;
@@ -8,6 +10,7 @@ using tinderr.Services;
 
 namespace tinderr.Controllers
 {
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
