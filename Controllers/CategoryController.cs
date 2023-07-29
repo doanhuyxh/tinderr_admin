@@ -10,7 +10,7 @@ using tinderr.Services;
 
 namespace tinderr.Controllers
 {
-    [Authorize(Roles = "SuperAdmin, Admin")]
+    //[Authorize(Roles = "SuperAdmin, Admin")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
