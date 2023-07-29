@@ -10,10 +10,11 @@ namespace tinderr.Controllers
     public class ChatController : Controller
     {
         private readonly IConfiguration _configuration;
-        private  readonly ApplicationDbContext _context;
-        public ChatController(ApplicationDbContext context, IConfiguration configuration) {
-            _context= context;
-            _configuration= configuration;
+        private readonly ApplicationDbContext _context;
+        public ChatController(ApplicationDbContext context, IConfiguration configuration)
+        {
+            _context = context;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -22,21 +23,21 @@ namespace tinderr.Controllers
             return View();
         }
 
-        
+
         public async Task<IActionResult> GetDataChaOneUser(string user)
         {
             JsonResultViewModel result = new JsonResultViewModel();
 
             var ds = await (from ms in _context.Message
-                     where ms.FromUser == user || ms.ToUser == user
-                     select new Message
-                     {
-                         FromUser = ms.FromUser,
-                         ToUser = ms.ToUser,
-                         createDate = ms.createDate,
-                         Content = ms.Content,
-                         Id = ms.Id,
-                     }).ToListAsync();
+                            where ms.FromUser == user || ms.ToUser == user
+                            select new Message
+                            {
+                                FromUser = ms.FromUser,
+                                ToUser = ms.ToUser,
+                                createDate = ms.createDate,
+                                Content = ms.Content,
+                                Id = ms.Id,
+                            }).ToListAsync();
 
             result.Data = ds;
             result.IsSuccess = true;
@@ -47,16 +48,16 @@ namespace tinderr.Controllers
         public async Task<IActionResult> historyChat(string fromUser, string toUser)
         {
             var hs = await (from ms in _context.Message
-                     where (ms.FromUser == fromUser && ms.ToUser == toUser) ||(ms.FromUser == toUser && ms.ToUser== fromUser)
-                     select new Message
-                     {
-                         FromUser = ms.FromUser,
-                         ToUser = ms.ToUser,
-                         createDate = ms.createDate,
-                         Content = ms.Content,
-                         Id = ms.Id,
-                         Status = ms.Status,
-                     }).ToListAsync();
+                            where (ms.FromUser == fromUser && ms.ToUser == toUser) || (ms.FromUser == toUser && ms.ToUser == fromUser)
+                            select new Message
+                            {
+                                FromUser = ms.FromUser,
+                                ToUser = ms.ToUser,
+                                createDate = ms.createDate,
+                                Content = ms.Content,
+                                Id = ms.Id,
+                                Status = ms.Status,
+                            }).ToListAsync();
 
             return Ok(hs);
         }
@@ -88,7 +89,7 @@ namespace tinderr.Controllers
             _context.SaveChanges();
             return Ok(us);
         }
-        
+
         public IActionResult GetOtherUser()
         {
             var ds = from o in _context.OtherUserChat
@@ -99,22 +100,47 @@ namespace tinderr.Controllers
 
             return Ok(ds.ToList());
         }
-        
+
         public async Task<IActionResult> GetHistoryChatOtherUser(string name)
         {
-            var hs = await(from ms in _context.Message
-            where (ms.FromUser == name || ms.ToUser == name) 
-            select new Message
-            {
-                               FromUser = ms.FromUser,
-                               ToUser = ms.ToUser,
-                               createDate = ms.createDate,
-                               Content = ms.Content,
-                               Id = ms.Id,
-                               Status = ms.Status,
-                           }).ToListAsync();
+            var hs = await (from ms in _context.Message
+                            where (ms.FromUser == name || ms.ToUser == name)
+                            select new Message
+                            {
+                                FromUser = ms.FromUser,
+                                ToUser = ms.ToUser,
+                                createDate = ms.createDate,
+                                Content = ms.Content,
+                                Id = ms.Id,
+                                Status = ms.Status,
+                            }).ToListAsync();
 
             return Ok(hs);
+        }
+
+        public IActionResult GetAvatarAndName(string userName)
+        {
+            JsonResultViewModel json = new JsonResultViewModel();
+            try
+            {
+                var user = _context.Users.FirstOrDefault(i => i.UserName == userName);
+                json.IsSuccess = true;
+                json.Message = "";
+                json.Data = new
+                {
+                    avatar = user.AvatartPath??"",
+                    name = user.Name,
+                };
+                return Ok(json);
+            }
+            catch (Exception ex)
+            {
+                json.Message = ex.Message;
+                json.IsSuccess= false;
+                json.Data = null;
+                return BadRequest(json);
+            }
+
         }
     }
 }

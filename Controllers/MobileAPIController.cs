@@ -228,8 +228,7 @@ namespace tinderr.Controllers
         {
 
             JsonResultViewModel json = new JsonResultViewModel();
-            json.Message = "Allowed";
-            json.IsSuccess = true;
+            json.Data = null;
             var user = await _userManager.FindByIdAsync(userId);
             if (user.IsNap250k == true)
             {
@@ -239,11 +238,13 @@ namespace tinderr.Controllers
                 asset.ViewCount += 1;
                 _context.Update(asset);
                 await _context.SaveChangesAsync();
+                json.Message = "Allowed";
+                json.IsSuccess = true;
+                return Ok(json);
             }
 
             json.IsSuccess = false;
             json.Message = "Not Allow";
-            json.Data = null;
             return Ok(json);
         }
 

@@ -42,8 +42,7 @@
                                         </div>
 
                                         <div data-mdb-perfect-scrollbar="true" style="position: relative;">
-                                            <ul id="DanhSachChartOther" class="list-unstyled mb-0 overflow-auto" style="height: auto;">
-                                            </ul>
+
                                             <table class="table table-warning" id="tableDanhSachChartOther">
                                                 <thead>
                                                     <tr>
@@ -51,7 +50,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tbodyDanhSachChartOther">
-
                                                 </tbody>
                                             </table>
                                         </div>
@@ -66,7 +64,6 @@
 
                                     <ul id="Chat_Message_Box" class="pt-3 pe-3 overflow-auto border border-danger" data-mdb-perfect-scrollbar="true"
                                         style="position: relative; height: 600px">
-                                        
                                     </ul>
 
                                     <div id="BoxTextChat" class="bg-red text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
@@ -109,6 +106,11 @@
     var prevUser = '';
     var currentAdmin = `@Html.Raw(ViewBag.currentUser)`;
 
+    // khai báo datatable;
+    var tableDanhSachChart;
+    var tableDanhSachChartOther;
+    // khai báo k
+
     var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
     connection.start().then(function () {
@@ -127,6 +129,7 @@
     connection.on("ReceiveMessageHistoryToAdmin", function (admin, listuser) {
         console.log("admin ----", admin)
         console.log("listuser -----", listuser)
+
         let ul_dsChart = document.getElementById("DanhSachChart");
         if (history.length == 0) {
             $('#preloader').fadeOut();
@@ -141,22 +144,24 @@
                 continue;
             }
             let tr = document.createElement("tr");
-            tr.classList.add("cursor-pointer");
+            tr.classList.add("cursor-pointer", `admin_${item.adminUser}`);
             tr.addEventListener("click", () => {
                 ChooseUserNameByUser(item.adminUser)
             })
             tr.innerHTML = `
-                                    <td><img src="${item.adminAvatar}" alt="avatar" width="60" height="50"> </td>
-                                    <td>${item.adminUser}</td>
-                                    <td>${item.adminName}</td>
-                                `;
+                                        <td><img src="${item.adminAvatar}" alt="avatar" width="60" height="50"> </td>
+                                        <td>${item.adminUser}</td>
+                                        <td>${item.adminName}</td>
+                                    `;
             tbody.appendChild(tr)
         };
     });
 
-    connection.on("ReceiveMessageToUser", function (user, adminChat, messange) {
-        getOtherUser();
+    connection.on("ReceiveMessageToUser", async function (user, adminChat, messange) {
+
+        //getOtherUser();
         if (currentUser != user) {
+
             Swal.fire({
                 position: 'top-end',
                 title: `tin nhắn mới từ ${user}`,
@@ -164,17 +169,54 @@
                 timer: 1500,
                 backdrop: false
             })
-            document.querySelector(`.${user}`).classList.add("bg-warning");
+
+            // handle chuyển hàng ở đây
+            let regexPattern = /^user_/;
+
+            if (regexPattern.test(user)) {
+                // sử lý người dùng vô danh
+                console.log("Chuỗi chứa đoạn ký tự 'user_': ", user);
+                let tbody = document.getElementById("tbodyDanhSachChartOther");
+
+
+                let tr = document.createElement("tr");
+
+                tr.classList.add("cursor-pointer", "table-danger", `user_${user}`);
+                tr.addEventListener("click", () => {
+                    ChooseUserNameByOtherUser(user)
+                })
+                tr.innerHTML = `<td>${user}</td>`;
+
+                tbody.insertBefore(tr, tbody.firstChild)
+
+            } else {
+                let tbody = document.getElementById('tbodyDanhSachChart');
+                let tr = document.createElement("tr");
+                let apiUser = await fetch("/Chat/GetAvatarAndName?userName=" + user);
+                let jsondata = await apiUser.json();
+                let avartar = jsondata.data.avatar;
+                let name = jsondata.data.name;
+                tr.classList.add("cursor-pointer", `admin_${user}`);
+                tr.addEventListener("click", () => {
+                    ChooseUserNameByUser(user)
+                })
+                tr.innerHTML = `
+                                                    <td><img src="${avartar}" alt="avatar" width="60" height="50"> </td>
+                                            <td>${user}</td>
+                                                    <td>${name}</td>
+                                        `;
+                tbody.insertBefore(tr, tbody.firstChild)
+            }
+
             return;
         }
         let ul = document.getElementById("Chat_Message_Box");
         let li = document.createElement("p");
 
-        li.innerHTML = `<p class="text-start fs-4">${messange}</p>`
+        li.innerHTML = `<p class="text-start fs-5 fw-bold">${messange}</p>`
 
         ul.appendChild(li)
 
-        getOtherUser()
     })
 
     connection.on("ReceiveMessageToAdmin", function (user, adminChat, messange) {
@@ -184,9 +226,9 @@
 
         if (adminChat == currentAdmin) {
 
-            li.innerHTML = `<p class="text-end fs-4">${messange}</p>`
+            li.innerHTML = `<p class="text-end fs-5 fw-bold">${messange}</p>`
         } else {
-            li.innerHTML = `<p class="text-start fs-4">${messange}</p>`
+            li.innerHTML = `<p class="text-start fs-5 fw-bold">${messange}</p>`
         };
 
         ul.appendChild(li);
@@ -209,9 +251,9 @@
                     let li = document.createElement("li")
                     if (item.fromUser == currentAdmin) {
 
-                        li.innerHTML = `<p class="text-end fs-4">${item.content}</p>`
+                        li.innerHTML = `<p class="text-end fs-5 fw-bold">${item.content}</p>`
                     } else {
-                        li.innerHTML = `<p class="text-start fs-4">${item.content}</p>`
+                        li.innerHTML = `<p class="text-start fs-5 fw-bold">${item.content}</p>`
                     };
 
                     boxChat.appendChild(li);
@@ -248,7 +290,7 @@
                         continue;
                     }
                     let tr = document.createElement("tr");
-                    tr.classList.add("cursor-pointer");
+                    tr.classList.add("cursor-pointer", `user_${item.name}`);
                     tr.addEventListener("click", () => {
                         ChooseUserNameByOtherUser(item.name)
                     })
@@ -261,7 +303,7 @@
     //lấy lịch sử người dùng khác
     function ChooseUserNameByOtherUser(name) {
         $('#preloader').fadeIn();
-        $("#currenUchta").text("Tài khoản chưa đăng nhập: "+name)
+        $("#currenUchta").text("Tài khoản chưa đăng nhập: " + name)
         let boxChat = document.getElementById("Chat_Message_Box");
         boxChat.innerHTML = "";
         currentUser = name;
@@ -273,9 +315,9 @@
                     let li = document.createElement("li")
                     if (item.fromUser == currentAdmin) {
 
-                        li.innerHTML = `<p class="text-end">${item.content}</p>`
+                        li.innerHTML = `<p class="text-end fs-5 fw-bold">${item.content}</p>`
                     } else {
-                        li.innerHTML = `<p class="text-start">${item.content}</p>`
+                        li.innerHTML = `<p class="text-start fs-5 fw-bold">${item.content}</p>`
                     };
 
                     boxChat.appendChild(li);
@@ -343,14 +385,14 @@
     $(document).ready(() => {
         setTimeout(() => {
             //tableDanhSachChart
-            var tableDanhSachChart = new DataTable('#tableDanhSachChart', {
+            tableDanhSachChart = new DataTable('#tableDanhSachChart', {
                 responsive: true,
                 paging: true,
                 select: true,
                 "filter": true,
                 "processing": true,
                 "serverSide": false,
-                "pageLength": 5,
+                "pageLength": 6,
                 "order": [[0, "desc"]],
                 dom: 'Bfrtip',
                 'columnDefs': [{
@@ -602,16 +644,16 @@
         }, 5000)
     })
 
-    $("#tableDanhSachChartOther").ready(()=>{
-        setTimeout(()=>{
-            var tableDanhSachChartOther = new DataTable('#tableDanhSachChartOther', {
+    $("#tableDanhSachChartOther").ready(() => {
+        setTimeout(() => {
+            tableDanhSachChartOther = new DataTable('#tableDanhSachChartOther', {
                 responsive: true,
                 paging: true,
                 select: true,
                 "filter": true,
                 "processing": true,
                 "serverSide": false,
-                "pageLength": 6,
+                "pageLength": 8,
                 "order": [[0, "desc"]],
                 dom: 'Bfrtip',
                 'columnDefs': [{
