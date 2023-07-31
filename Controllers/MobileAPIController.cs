@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.JSInterop.Implementation;
 using SharpCompress.Common;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,7 +41,7 @@ namespace tinderr.Controllers
             _iConfiguration = iConfiguration;
             _userManager = userManager;
             _icommon = common;
-            priceVideo = int.Parse(_iConfiguration["Video:Price"]??"");
+            priceVideo = int.Parse(_iConfiguration["Video:Price"] ?? "");
             videoActivePrice = bool.Parse(_iConfiguration["Video:videoActivePrice"] ?? "true");
             _webHostEnvironment = webHostEnvironment;
         }
@@ -104,7 +105,7 @@ namespace tinderr.Controllers
             }
             catch (Exception ex)
             {
-                json.Message = "Exception: "+ ex.Message;
+                json.Message = "Exception: " + ex.Message;
                 json.IsSuccess = false;
                 json.Data = vm;
                 return Ok(json);
@@ -230,7 +231,21 @@ namespace tinderr.Controllers
             JsonResultViewModel json = new JsonResultViewModel();
             json.Data = null;
             var user = await _userManager.FindByIdAsync(userId);
-            if (user.IsNap250k == true)
+
+            if (user.CountWatch > 0)
+            {
+                AseetVideo asset = new AseetVideo();
+                asset = _context.AseetVideo.FirstOrDefault(i => i.Id == videoId);
+                asset.ViewCount += 1;
+                _context.Update(asset);
+                await _context.SaveChangesAsync();
+                user.CountWatch -= 1;
+                await  _userManager.UpdateAsync(user);
+                json.Message = "Allowed";
+                json.IsSuccess = true;
+                return Ok(json);
+            }
+            else if (user.IsNap250k == true)
             {
 
                 AseetVideo asset = new AseetVideo();
@@ -249,17 +264,34 @@ namespace tinderr.Controllers
         }
 
         [SwaggerOperation("WatchVideoById", Summary = "xem video")]
+        [AllowAnonymous]
         [HttpGet("id/{id}")]
-        public async Task<IActionResult> VideobyId(int id)
+        public async Task<ActionResult<JsonResultViewModel>> VideobyId(int id)
         {
-
             JsonResultViewModel json = new JsonResultViewModel();
             json.Message = "";
-            json.IsSuccess = true;
+
             try
             {
-                var data = _context.AseetVideo.FirstOrDefault(i => i.Id == id);
-                json.Data = System.IO.File.ReadAllText(_webHostEnvironment.ContentRootPath + "/wwwroot" + data.VideoLinkPath);
+                var data = await _context.AseetVideo.FirstOrDefaultAsync(i => i.Id == id);
+                var fileProvider = new PhysicalFileProvider(_webHostEnvironment.ContentRootPath);
+                var fileInfo = fileProvider.GetFileInfo("/wwwroot" + data.VideoLinkPath);
+
+                if (!fileInfo.Exists)
+                {
+                    // Handle the case when the file does not exist
+                    json.IsSuccess = false;
+                    json.Message = "File not found.";
+                    json.Data = null;
+                    return Ok(json);
+                }
+
+                using (var streamReader = new System.IO.StreamReader(fileInfo.PhysicalPath))
+                {
+                    var fileContent = await streamReader.ReadToEndAsync();
+                    json.Data = fileContent;
+                }
+
                 return Ok(json);
             }
             catch (Exception ex)
@@ -381,13 +413,13 @@ namespace tinderr.Controllers
                 json.Message = "success";
 
                 var rs = await (from h in _context.HistoryGame
-                         select new
-                         {
-                             item1 = h.item1 == 1 ? "Xuân" : "Hạ",
-                             item2 = h.item2 == 3 ? "Thu" : "Đông",
-                             wave = h.wave,
-                         }).ToListAsync();
-                json.Data = rs.OrderByDescending(x=>x.wave).TakeLast(30);
+                                select new
+                                {
+                                    item1 = h.item1 == 1 ? "Xuân" : "Hạ",
+                                    item2 = h.item2 == 3 ? "Thu" : "Đông",
+                                    wave = h.wave,
+                                }).ToListAsync();
+                json.Data = rs.OrderByDescending(x => x.wave).TakeLast(30);
                 return Ok(json);
 
             }
@@ -412,7 +444,7 @@ namespace tinderr.Controllers
 
                 var user = await _userManager.FindByIdAsync(req.UserId);
 
-                if(user == null)
+                if (user == null)
                 {
                     json.IsSuccess = false;
                     json.Message = "Not found";
@@ -433,7 +465,7 @@ namespace tinderr.Controllers
                     await _userManager.UpdateAsync(user);
                     json.Data = user;
                 }
-               
+
                 return Ok(json);
 
             }

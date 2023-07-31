@@ -54,6 +54,28 @@ namespace tinderr.Services
             return basePath+PathFile;
 
         }
+        public async Task<string> UploadFilm(IFormFile file)
+        {
+            string PathFile = string.Empty;
+            string basePath = "/upload/Video/";
+            if (file != null)
+            {
+                string uploadsFolder = Path.Combine(_iHostingEnvironment.ContentRootPath, "wwwroot/upload/Video");
+
+                if (file.FileName == null)
+                    PathFile = "default.mp4";
+                else
+                    PathFile = DateTime.Now.Ticks.ToString() + "_" + file.FileName;
+                string filePath = Path.Combine(uploadsFolder, PathFile);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+            }
+            return basePath+PathFile;
+
+        }
         public async Task<string> UploadVideoBase64(IFormFile file)
         {
             string pathFile = string.Empty;

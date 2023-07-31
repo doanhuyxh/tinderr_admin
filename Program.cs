@@ -101,15 +101,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
-    options.Cookie.Name = "Tinderr"; // Tên cookie
-    options.Cookie.Domain = "scammer.click"; // Tên miền cookie áp dụng (nếu có)
-    options.Cookie.Path = "/"; // Đường dẫn cookie áp dụng
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Chính sách bảo mật (SameAsRequest, Always, None)
-    options.Cookie.HttpOnly = true; // Cookie chỉ được truy cập bằng HTTP (không bằng JavaScript)
-    options.Cookie.SameSite = SameSiteMode.Strict; // Giới hạn cookie chỉ được gửi trong cùng nguồn (Strict, Lax, None)
     options.LoginPath = "/Account/Login";
-    options.ExpireTimeSpan = TimeSpan.FromDays(7); // Thời gian hết hạn của cookie
-    options.SlidingExpiration = true; // Cho phép cập nhật thời gian hết hạn khi có hoạt động từ người dùng
     options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn chuyển hướng khi truy cập bị từ chối
 });
 

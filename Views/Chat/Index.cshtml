@@ -211,11 +211,12 @@
             return;
         }
         let ul = document.getElementById("Chat_Message_Box");
-        let li = document.createElement("p");
+        let li = document.createElement("li");
 
-        li.innerHTML = `<p class="text-start fs-5 fw-bold">${messange}</p>`
-
-        ul.appendChild(li)
+        li.innerHTML = `<p class="text-start p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-success"> ${messange} </span></p>`
+            
+        ul.appendChild(li);
+        scrollToBottom();
 
     })
 
@@ -226,9 +227,9 @@
 
         if (adminChat == currentAdmin) {
 
-            li.innerHTML = `<p class="text-end fs-5 fw-bold">${messange}</p>`
+            li.innerHTML = `<p class="text-end p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-secondary"> ${messange} </span></p>`
         } else {
-            li.innerHTML = `<p class="text-start fs-5 fw-bold">${messange}</p>`
+            li.innerHTML = `<p class="text-start p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-success"> ${messange} </span></p>`
         };
 
         ul.appendChild(li);
@@ -251,9 +252,9 @@
                     let li = document.createElement("li")
                     if (item.fromUser == currentAdmin) {
 
-                        li.innerHTML = `<p class="text-end fs-5 fw-bold">${item.content}</p>`
+                        li.innerHTML = `<p class="text-end p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-secondary"> ${item.content} </span></p>`
                     } else {
-                        li.innerHTML = `<p class="text-start fs-5 fw-bold">${item.content}</p>`
+                        li.innerHTML = `<p class="text-start p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-success"> ${item.content} </span></p>`
                     };
 
                     boxChat.appendChild(li);
@@ -315,9 +316,9 @@
                     let li = document.createElement("li")
                     if (item.fromUser == currentAdmin) {
 
-                        li.innerHTML = `<p class="text-end fs-5 fw-bold">${item.content}</p>`
+                        li.innerHTML = `<p class="text-end p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-secondary"> ${item.content} </span></p>`
                     } else {
-                        li.innerHTML = `<p class="text-start fs-5 fw-bold">${item.content}</p>`
+                        li.innerHTML = `<p class="text-start p-1 w-100 h-100"><span class="fs-6 p-2 fw-bold rounded-pill text-white bg-success"> ${item.content} </span></p>`
                     };
 
                     boxChat.appendChild(li);

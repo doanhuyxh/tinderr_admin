@@ -7,5 +7,6 @@
         Task<string> UploadVideoBase64 (IFormFile file);
         Task<string> UploadAvatarUser (IFormFile file);
         Task<string> UploadBannerImg (IFormFile file);
+        Task<string> UploadFilm(IFormFile file);
     }
 }
