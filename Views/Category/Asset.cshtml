@@ -114,18 +114,16 @@
             async ViewFilmVideo(url) {
 
                 $('#preloader').fadeIn();
-                fetch(url)
-                .then(res=>res.text())
-                .then(data=>{
 
-                        $('#preloader').fadeOut();
-                        Swal.fire({
-                            html: `<video controls class="video_alert">
-                                          <source src="data:video/mp4;base64,${data}" type="video/mp4">
-                                </video>`,
-                            imageWidth: 500,
-                        })
-                })         
+
+                $('#preloader').fadeOut();
+                Swal.fire({
+                    html: `<video controls class="video_alert">
+                        <source src="${url}" type="video/mp4">
+                    </video>`,
+                    imageWidth: 500,
+                })
+
             },
 
         }

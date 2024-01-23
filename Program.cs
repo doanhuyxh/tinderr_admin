@@ -57,11 +57,8 @@ builder.Services.AddSignalR(options =>
 //add cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", builder =>
-    {
-        builder.WithOrigins("http://tinderr.id.vn", "https://tinderr.id.vn", "http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    options.AddDefaultPolicy(s => s.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
-    });
 });
 
 
@@ -137,7 +134,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors("CorsPolicy");
+app.UseCors();
 
 
 

@@ -51,7 +51,7 @@ namespace tinderr.Services
                     await file.CopyToAsync(fileStream);
                 }
             }
-            return basePath+PathFile;
+            return basePath + PathFile;
 
         }
         public async Task<string> UploadFilm(IFormFile file)
@@ -73,7 +73,7 @@ namespace tinderr.Services
                     await file.CopyToAsync(fileStream);
                 }
             }
-            return basePath+PathFile;
+            return basePath + PathFile;
 
         }
         public async Task<string> UploadVideoBase64(IFormFile file)
@@ -98,7 +98,7 @@ namespace tinderr.Services
                 await File.WriteAllTextAsync(filePath, base64String);
             }
 
-            return basePath+pathFile;
+            return basePath + pathFile;
         }
 
         // convert video to base 64
@@ -110,26 +110,7 @@ namespace tinderr.Services
                 {
                     file.CopyTo(memoryStream);
                     byte[] videoBytes = memoryStream.ToArray();
-
-                    // Save the memoryStream to a temporary file
-                    string tempFilePath = Path.GetTempFileName();
-                    File.WriteAllBytes(tempFilePath, videoBytes);
-
-                    // Nén video sử dụng NReco.VideoConverter
-                    string compressedFilePath = Path.GetTempFileName() + ".mp4"; // Temporary file for the compressed video
-                    var converter = new FFMpegConverter();
-                    converter.Invoke($"-i {tempFilePath} -b:v 500k {compressedFilePath}"); // Giảm bitrate xuống 500kbit/s
-                    converter.ConvertMedia(tempFilePath, compressedFilePath, Format.mp4);
-
-                    // Read the compressed video back to a MemoryStream
-                    byte[] compressedVideoBytes = File.ReadAllBytes(compressedFilePath);
-
-                    // Delete the temporary files
-                    File.Delete(tempFilePath);
-                    File.Delete(compressedFilePath);
-
-                    string base64String = Convert.ToBase64String(compressedVideoBytes);
-
+                    string base64String = Convert.ToBase64String(videoBytes);
                     return base64String;
                 }
             }
@@ -137,7 +118,6 @@ namespace tinderr.Services
             {
                 return ex.Message;
             }
-
         }
 
         public async Task<string> UploadAvatarUser(IFormFile file)
@@ -178,7 +158,7 @@ namespace tinderr.Services
                 string filePath = Path.Combine(uploadsFolder, PathFile);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {   
+                {
                     await file.CopyToAsync(fileStream);
                 }
             }

@@ -266,32 +266,16 @@ namespace tinderr.Controllers
         [SwaggerOperation("WatchVideoById", Summary = "xem video")]
         [AllowAnonymous]
         [HttpGet("id/{id}")]
-        public async Task<ActionResult<JsonResultViewModel>> VideobyId(int id)
+        public async Task<IActionResult> VideobyId(int id)
         {
             JsonResultViewModel json = new JsonResultViewModel();
             json.Message = "";
-
+            json.IsSuccess = true;
             try
             {
                 var data = await _context.AseetVideo.FirstOrDefaultAsync(i => i.Id == id);
-                var fileProvider = new PhysicalFileProvider(_webHostEnvironment.ContentRootPath);
-                var fileInfo = fileProvider.GetFileInfo("/wwwroot" + data.VideoLinkPath);
-
-                if (!fileInfo.Exists)
-                {
-                    // Handle the case when the file does not exist
-                    json.IsSuccess = false;
-                    json.Message = "File not found.";
-                    json.Data = null;
-                    return Ok(json);
-                }
-
-                using (var streamReader = new System.IO.StreamReader(fileInfo.PhysicalPath))
-                {
-                    var fileContent = await streamReader.ReadToEndAsync();
-                    json.Data = fileContent;
-                }
-
+                //json.Data = await System.IO.File.ReadAllTextAsync(_webHostEnvironment.ContentRootPath + "/wwwroot" + data.VideoLinkPath);
+                json.Data = data.VideoLinkPath;
                 return Ok(json);
             }
             catch (Exception ex)

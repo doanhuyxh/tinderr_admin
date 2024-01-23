@@ -37,6 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="wwwroot\upload\Video" />
 		<Folder Include="wwwroot\upload\Temp\" />
 		<Folder Include="wwwroot\upload\VideoBase64" />
 		<Folder Include="wwwroot\upload\banner" />

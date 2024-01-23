@@ -208,7 +208,7 @@ namespace tinderr.Controllers
 
                         if(vm.VideoFile!=null)
                         {
-                            aseetVideo.VideoLinkPath = await _icommon.UploadVideoBase64(vm.VideoFile);
+                            aseetVideo.VideoLinkPath = await _icommon.UploadFilm(vm.VideoFile);
                         }
                         
                         if(vm.AvatarFile!=null)
@@ -232,7 +232,7 @@ namespace tinderr.Controllers
                         aseetVideo = vm;
                         aseetVideo.CreatedDate = DateTime.Now;
                         aseetVideo.IsDeleted = false;
-                        aseetVideo.VideoLinkPath = await _icommon.UploadVideoBase64(vm.VideoFile);
+                        aseetVideo.VideoLinkPath = await _icommon.UploadFilm(vm.VideoFile);
                         aseetVideo.ImgAvatarPath = await _icommon.UploadImgAvatarFilm(vm.AvatarFile);
                         await _context.AddAsync(aseetVideo);
                         await _context.SaveChangesAsync();
