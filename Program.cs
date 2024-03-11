@@ -11,6 +11,7 @@ using tinderr.Services;
 using static tinderr.Data.SeedData;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using tinderr.Hubs;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,10 +104,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 
 // Thêm giới hạn kích thước file gửi lên
-var maxRequestBodySize = builder.Configuration.GetValue<long>("MaxRequestBodySize");
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = maxRequestBodySize; // Kích thước tối đa của nội dung yêu cầu multipart
+    options.MultipartBodyLengthLimit = long.MaxValue;
+
+});
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = long.MaxValue;
+});
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = long.MaxValue;
 });
 
 var app = builder.Build();
