@@ -22,7 +22,7 @@
 
     fileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
-        const chunkSize = 1024 * 1024 * 10; // 1MB
+        const chunkSize = 1024 * 1024 * 25; // 50MB
         let offset = 0;
 
         function uploadNextChunk() {
