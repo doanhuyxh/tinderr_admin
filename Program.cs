@@ -174,14 +174,14 @@ app.UseSwaggerUI(c =>
     c.DocExpansion(DocExpansion.List);
 });
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var initializer = services.GetRequiredService<IIdentityDataInitializer>();
-    await initializer.SeedData(
-        services.GetRequiredService<UserManager<ApplicationUser>>(),
-        services.GetRequiredService<RoleManager<IdentityRole>>()
-    );
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var initializer = services.GetRequiredService<IIdentityDataInitializer>();
+//    await initializer.SeedData(
+//        services.GetRequiredService<UserManager<ApplicationUser>>(),
+//        services.GetRequiredService<RoleManager<IdentityRole>>()
+//    );
+//}
 
 app.Run();
